@@ -20,7 +20,7 @@ export function mergeMessages(base: Messages, override: Messages): Messages {
  * Student-facing fragments must exist in all four locales; staff/admin fragments exist in fr + en only
  * (other locales fall back to French).
  */
-export const STUDENT_FRAGMENTS = ["core", "enums", "wizard", "student"] as const;
+export const STUDENT_FRAGMENTS = ["core", "enums", "wizard", "student", "notifications"] as const;
 export const STAFF_FRAGMENTS = ["staff-enums", "staff", "admin"] as const;
 export const FRAGMENTS = [...STUDENT_FRAGMENTS, ...STAFF_FRAGMENTS] as const;
 

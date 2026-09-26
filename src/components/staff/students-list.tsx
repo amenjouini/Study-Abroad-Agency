@@ -5,6 +5,7 @@ import { Badge, EmptyState, PageHeader, Table, Td, Th } from "@/components/ui/pr
 import { localized } from "@/lib/format";
 import type { AuthUser } from "@/server/authz";
 import { filterOptions, listCases, parseFilters } from "@/server/staff-queries";
+import { ExportMenu } from "./export-menu";
 import { FilterBar } from "./filter-bar";
 
 const PAGE = 25;
@@ -25,7 +26,7 @@ export async function StudentsList({ user, area, searchParams }: { user: AuthUse
 
   return (
     <>
-      <PageHeader title={t("title")} description={t("count", { n: total })} />
+      <PageHeader title={t("title")} description={t("count", { n: total })} actions={<ExportMenu />} />
       <FilterBar action={`/${area}/students`} filters={filters} options={options} />
       {rows.length === 0 ? (
         <EmptyState title={t("none")} description={t("noneHint")} />

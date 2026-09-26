@@ -80,7 +80,7 @@ describe.skipIf(!DB_AVAILABLE)("authorization (server-side)", () => {
       const c = await caseOf(`${name}@student.test`);
       expect(await hasPermission(admin, "documents.review", { caseId: c.id })).toBe(true);
     }
-    expect(await db.case.count({ where: await caseAccessWhere(admin, "students.read") })).toBe(5);
+    expect(await db.case.count({ where: await caseAccessWhere(admin, "students.read") })).toBe(await db.case.count());
   });
 
   it("only the owner holds owner.manage", async () => {

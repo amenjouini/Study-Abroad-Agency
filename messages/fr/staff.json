@@ -236,6 +236,15 @@
       "due": "Échéance",
       "priority": "Priorité"
     },
+    "exports": {
+      "title": "Exporter en CSV",
+      "students": "Étudiants",
+      "payments": "Paiements",
+      "documents": "Documents",
+      "appointments": "Rendez-vous agence",
+      "visa": "Dossiers de visa",
+      "scholarships": "Demandes de bourse"
+    },
     "messages": {
       "title": "Messages",
       "description": "Conversations avec vos étudiants.",

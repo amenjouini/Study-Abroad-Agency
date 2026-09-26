@@ -236,6 +236,15 @@
       "due": "Due",
       "priority": "Priority"
     },
+    "exports": {
+      "title": "Export CSV",
+      "students": "Students",
+      "payments": "Payments",
+      "documents": "Documents",
+      "appointments": "Agency appointments",
+      "visa": "Visa cases",
+      "scholarships": "Scholarship applications"
+    },
     "messages": {
       "title": "Messages",
       "description": "Conversations with your students.",

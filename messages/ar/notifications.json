@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "types": {
+      "document.approved": "تم قبول وثيقتك «{requirement}».",
+      "document.rejected": "وثيقتك «{requirement}» تحتاج إلى تصحيح: {reason}",
+      "document.uploaded": "وثيقة جديدة للمراجعة: {requirement}",
+      "payment.recorded": "تم تسجيل دفعة: {payment}",
+      "payment.due": "دفعة مستحقة بتاريخ {date}: {payment}",
+      "appointment.requested": "طلب موعد جديد: {reason}",
+      "appointment.confirmed": "تم تأكيد موعدك مع الوكالة.",
+      "appointment.rescheduled": "تمت إعادة جدولة موعدك مع الوكالة.",
+      "appointment.cancelled": "تم إلغاء موعدك مع الوكالة.",
+      "appointment.completed": "تم تسجيل موعدك مع الوكالة كمنتهٍ.",
+      "appointment.no_show": "فاتك موعدك مع الوكالة.",
+      "appointment.tomorrow": "موعد غدًا: {reason}",
+      "deadline.approaching": "بعد {days} يوم: {requirement} (الأجل {date}).",
+      "message.new": "رسالة جديدة من {from}.",
+      "help.requested": "طالب يحتاج مساعدة (الأولوية {priority}).",
+      "case.assigned": "تم إسناد ملف إليك.",
+      "case.attention": "ملفك يحتاج إلى انتباهك.",
+      "visa.status": "تغيّرت حالة تأشيرتك. افتح صفحة التأشيرة لمعرفة التفاصيل."
+    }
+  }
+}

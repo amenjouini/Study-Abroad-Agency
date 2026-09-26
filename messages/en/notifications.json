@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "types": {
+      "document.approved": "Your document “{requirement}” was approved.",
+      "document.rejected": "Your document “{requirement}” needs a correction: {reason}",
+      "document.uploaded": "New document to review: {requirement}",
+      "payment.recorded": "Payment recorded: {payment}",
+      "payment.due": "Payment due on {date}: {payment}",
+      "appointment.requested": "New appointment request: {reason}",
+      "appointment.confirmed": "Your agency appointment was confirmed.",
+      "appointment.rescheduled": "Your agency appointment was rescheduled.",
+      "appointment.cancelled": "Your agency appointment was cancelled.",
+      "appointment.completed": "Your agency appointment is marked as completed.",
+      "appointment.no_show": "You missed your agency appointment.",
+      "appointment.tomorrow": "Appointment tomorrow: {reason}",
+      "deadline.approaching": "In {days} day(s): {requirement} (deadline {date}).",
+      "message.new": "New message from {from}.",
+      "help.requested": "A student needs help (priority {priority}).",
+      "case.assigned": "A case was assigned to you.",
+      "case.attention": "Your file needs your attention.",
+      "visa.status": "Your visa status changed. Open the Visa page for details."
+    }
+  }
+}

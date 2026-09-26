@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "types": {
+      "document.approved": "Votre document « {requirement} » a été approuvé.",
+      "document.rejected": "Votre document « {requirement} » nécessite une correction : {reason}",
+      "document.uploaded": "Nouveau document à vérifier : {requirement}",
+      "payment.recorded": "Paiement enregistré : {payment}",
+      "payment.due": "Paiement à effectuer le {date} : {payment}",
+      "appointment.requested": "Nouvelle demande de rendez-vous : {reason}",
+      "appointment.confirmed": "Votre rendez-vous avec l'agence a été confirmé.",
+      "appointment.rescheduled": "Votre rendez-vous avec l'agence a été reporté.",
+      "appointment.cancelled": "Votre rendez-vous avec l'agence a été annulé.",
+      "appointment.completed": "Votre rendez-vous avec l'agence est marqué comme terminé.",
+      "appointment.no_show": "Vous avez manqué votre rendez-vous avec l'agence.",
+      "appointment.tomorrow": "Rendez-vous demain : {reason}",
+      "deadline.approaching": "Dans {days} jour(s) : {requirement} (échéance {date}).",
+      "message.new": "Nouveau message de {from}.",
+      "help.requested": "Un étudiant a besoin d'aide (priorité {priority}).",
+      "case.assigned": "Un dossier vous a été assigné.",
+      "case.attention": "Votre dossier demande votre attention.",
+      "visa.status": "L'état de votre visa a changé. Ouvrez la page Visa pour les détails."
+    }
+  }
+}

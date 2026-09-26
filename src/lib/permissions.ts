@@ -68,6 +68,7 @@ export const STAFF_DEFAULT_PERMISSIONS = [
   "messages.read",
   "messages.write",
   "humanreview.resolve",
+  "exports.run",
 ];
 
 export const STUDENT_PERMISSIONS = PERMISSIONS.filter((p) => p.area === "self").map((p) => p.key);

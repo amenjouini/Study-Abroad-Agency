@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { logoutAction } from "@/app/(auth)/actions";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/notification-bell";
 import { Badge } from "@/components/ui/primitives";
 import type { AuthUser } from "@/server/authz";
 import { BottomNav, SideNav, type NavItem } from "./nav-items";
@@ -59,6 +60,7 @@ export async function StudentShell({ user, children }: { user: AuthUser; childre
           </div>
           <div className="hidden text-sm text-muted-foreground md:block">{tc("welcome", { name: user.name.split(" ")[0] })}</div>
           <div className="flex items-center gap-2">
+            <NotificationBell user={user} />
             <LocaleSwitcher />
             <LogoutButton label={tc("logout")} />
           </div>
@@ -163,6 +165,7 @@ export async function StaffShell({
           <div className="flex items-center gap-2">
             <Badge tone={area === "admin" ? "primary" : "neutral"}>{user.roleKey}</Badge>
             <span className="hidden text-sm sm:inline">{user.name}</span>
+            <NotificationBell user={user} />
             <LocaleSwitcher />
             <LogoutButton label={tc("logout")} />
           </div>

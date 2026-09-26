@@ -393,7 +393,9 @@ export async function saveVisa(actor: AuthUser, applicationId: string, input: un
     await audit(actor, tx, "visa.update", "VisaCase", visa.id, app.caseId, { stage: visa.stage, appointmentAt: visa.appointmentAt?.toISOString() ?? null });
     if (existing && data.stage && data.stage !== existing.stage) {
       const { writeTimeline } = await import("@/server/audit");
+      const { notify, studentUserId } = await import("@/server/notifications");
       await writeTimeline({ caseId: app.caseId, type: "visa.stage_changed", title: "Visa stage changed", detail: data.stage, actorId: actor.id }, tx);
+      await notify({ userId: await studentUserId(app.caseId, tx), caseId: app.caseId, type: "visa.status", title: "Visa status changed", data: { stage: data.stage }, link: "/student/visa" }, tx);
     }
     return visa.id;
   });

@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "types": {
+      "document.approved": "Il tuo documento «{requirement}» è stato approvato.",
+      "document.rejected": "Il tuo documento «{requirement}» richiede una correzione: {reason}",
+      "document.uploaded": "Nuovo documento da verificare: {requirement}",
+      "payment.recorded": "Pagamento registrato: {payment}",
+      "payment.due": "Pagamento in scadenza il {date}: {payment}",
+      "appointment.requested": "Nuova richiesta di appuntamento: {reason}",
+      "appointment.confirmed": "Il tuo appuntamento in agenzia è stato confermato.",
+      "appointment.rescheduled": "Il tuo appuntamento in agenzia è stato riprogrammato.",
+      "appointment.cancelled": "Il tuo appuntamento in agenzia è stato annullato.",
+      "appointment.completed": "Il tuo appuntamento in agenzia risulta completato.",
+      "appointment.no_show": "Hai mancato il tuo appuntamento in agenzia.",
+      "appointment.tomorrow": "Appuntamento domani: {reason}",
+      "deadline.approaching": "Tra {days} giorno/i: {requirement} (scadenza {date}).",
+      "message.new": "Nuovo messaggio da {from}.",
+      "help.requested": "Uno studente ha bisogno di aiuto (priorità {priority}).",
+      "case.assigned": "Ti è stata assegnata una pratica.",
+      "case.attention": "La tua pratica richiede la tua attenzione.",
+      "visa.status": "Lo stato del tuo visto è cambiato. Apri la pagina Visto per i dettagli."
+    }
+  }
+}
