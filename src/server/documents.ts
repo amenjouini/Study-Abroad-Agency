@@ -23,7 +23,7 @@ const STUDENT_UPLOADABLE: ReadonlySet<RequirementStatus> = new Set([
 ]);
 const STAFF_UPLOADABLE: ReadonlySet<RequirementStatus> = new Set([...STUDENT_UPLOADABLE, "APPROVED"]);
 
-async function authorizeCaseDocuments(actor: AuthUser, caseId: string, mode: "upload" | "read" | "review"): Promise<void> {
+export async function authorizeCaseDocuments(actor: AuthUser, caseId: string, mode: "upload" | "read" | "review"): Promise<void> {
   if (actor.roleKey === "STUDENT") {
     if (mode === "review") throw new ForbiddenError();
     await requirePermission(actor, mode === "upload" ? "self.documents" : "self.documents", { caseId });

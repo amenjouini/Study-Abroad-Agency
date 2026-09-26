@@ -15,9 +15,30 @@ export function mergeMessages(base: Messages, override: Messages): Messages {
   return out;
 }
 
+/**
+ * Catalog fragments (messages/<locale>/<name>.json), one per feature area.
+ * Student-facing fragments must exist in all four locales; staff/admin fragments exist in fr + en only
+ * (other locales fall back to French).
+ */
+export const STUDENT_FRAGMENTS = ["core", "enums", "wizard", "student"] as const;
+export const STAFF_FRAGMENTS = ["staff", "admin"] as const;
+export const FRAGMENTS = [...STUDENT_FRAGMENTS, ...STAFF_FRAGMENTS] as const;
+
+async function loadFragments(locale: AppLocale): Promise<Messages> {
+  let out: Messages = {};
+  for (const name of FRAGMENTS) {
+    try {
+      const mod = (await import(`../../messages/${locale}/${name}.json`)) as { default: Messages };
+      out = mergeMessages(out, mod.default);
+    } catch {
+      // fragment not provided for this locale: falls back to French
+    }
+  }
+  return out;
+}
+
 export async function loadMessages(locale: AppLocale): Promise<Messages> {
-  const fr = (await import("../../messages/fr.json")).default as Messages;
+  const fr = await loadFragments("fr");
   if (locale === "fr") return fr;
-  const other = (await import(`../../messages/${locale}.json`)).default as Messages;
-  return mergeMessages(fr, other);
+  return mergeMessages(fr, await loadFragments(locale));
 }

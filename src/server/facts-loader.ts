@@ -92,7 +92,7 @@ export async function loadCaseFacts(caseId: string, client: Client = db, today: 
     },
     sponsors: c.sponsors.map((s) => ({
       id: s.id,
-      label: `${s.relationship.name} — ${s.fullName}`,
+      label: `${s.relationship.code} — ${s.fullName}`,
       relationship: s.relationship.code,
       professionalStatus: s.professionalStatus,
       pensionFund: s.pensionFund,

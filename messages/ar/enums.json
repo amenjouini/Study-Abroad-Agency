@@ -1,0 +1,142 @@
+{
+  "enums": {
+    "RequirementStatus": {
+      "NOT_STARTED": "في انتظار الرفع",
+      "REQUESTED": "مطلوب",
+      "UPLOADED": "تم الرفع — في انتظار المراجعة",
+      "UNDER_REVIEW": "قيد المراجعة",
+      "APPROVED": "مقبول",
+      "REJECTED": "يلزم التصحيح",
+      "NEEDS_CORRECTION": "يلزم التصحيح",
+      "EXPIRED": "منتهي الصلاحية",
+      "NOT_APPLICABLE": "غير مطلوب",
+      "REQUIRES_HUMAN_REVIEW": "فريقنا يتحقق"
+    },
+    "DocumentVersionStatus": {
+      "UPLOADED": "تم الرفع",
+      "UNDER_REVIEW": "قيد المراجعة",
+      "APPROVED": "مقبول",
+      "REJECTED": "مرفوض",
+      "NEEDS_CORRECTION": "مطلوب استبدال",
+      "SUPERSEDED": "استُبدل بنسخة أحدث"
+    },
+    "ApplicationStatus": {
+      "PLANNED": "مخطط له",
+      "PREPARING": "قيد الإعداد",
+      "SUBMITTED": "تم التقديم",
+      "UNDER_EVALUATION": "قيد التقييم",
+      "ADDITIONAL_DOCUMENTS": "مطلوب وثائق إضافية",
+      "ACCEPTED": "مقبول",
+      "REJECTED": "غير مقبول",
+      "WITHDRAWN": "تم السحب",
+      "ENROLLED": "مسجّل"
+    },
+    "VisaStage": {
+      "DOCUMENT_PREPARATION": "إعداد الوثائق",
+      "DOCUMENT_REVIEW": "الوثائق قيد المراجعة",
+      "FILE_COMPLETE": "الملف مكتمل",
+      "UNIVERSITALY_VALIDATED": "تم اعتماد Universitaly",
+      "APPOINTMENT_PENDING": "في انتظار رسالة ALMAVIVA",
+      "APPOINTMENT_SCHEDULED": "تم تحديد الموعد",
+      "SUBMITTED": "تم إيداع الطلب",
+      "PROCESSING": "قيد المعالجة",
+      "ADDITIONAL_DOCUMENTS": "مطلوب وثائق إضافية",
+      "APPROVED": "القرار: مقبول",
+      "REFUSED": "القرار: مرفوض",
+      "PASSPORT_RETURNED": "تم إرجاع جواز السفر"
+    },
+    "UniversitalyStatus": {
+      "NOT_STARTED": "لم يبدأ",
+      "IN_PROGRESS": "قيد التنفيذ",
+      "SUBMITTED": "تم الإرسال",
+      "CORRECTIONS_REQUESTED": "مطلوب تصحيحات",
+      "VALIDATED": "تم الاعتماد",
+      "TRANSMITTED_TO_EMBASSY": "أُحيل إلى السفارة"
+    },
+    "PaymentStatus": {
+      "PENDING": "في الانتظار",
+      "PARTIALLY_PAID": "مدفوع جزئيًا",
+      "PAID": "مدفوع",
+      "LATE": "متأخر",
+      "CANCELLED": "ملغى"
+    },
+    "AppointmentType": {
+      "GENERAL_CONSULTATION": "استشارة عامة",
+      "DOCUMENT_PROBLEM": "مشكلة في وثيقة",
+      "VISA_PROBLEM": "مشكلة في التأشيرة",
+      "UNIVERSITY_PROBLEM": "مشكلة في الجامعة",
+      "SCHOLARSHIP_PROBLEM": "مشكلة في المنحة",
+      "EMERGENCY": "طارئ",
+      "OTHER": "أخرى"
+    },
+    "AppointmentStatus": {
+      "REQUESTED": "مطلوب",
+      "CONFIRMED": "مؤكد",
+      "RESCHEDULED": "أُعيدت جدولته",
+      "COMPLETED": "منتهٍ",
+      "CANCELLED": "ملغى",
+      "NO_SHOW": "لم يحضر"
+    },
+    "ScholarshipApplicationStatus": {
+      "PLANNED": "مخطط لها",
+      "PREPARING": "قيد الإعداد",
+      "SUBMITTED": "تم تقديم الطلب",
+      "UNDER_EVALUATION": "قيد التقييم",
+      "AWARDED": "ممنوحة",
+      "REJECTED": "غير ممنوحة",
+      "WITHDRAWN": "تم السحب"
+    },
+    "DegreeLevel": {
+      "BACHELOR": "إجازة (Laurea)",
+      "MASTER": "ماجستير (Laurea Magistrale)",
+      "SINGLE_CYCLE": "دورة موحدة",
+      "PHD": "دكتوراه",
+      "SPECIALIZATION": "مدرسة تخصص"
+    },
+    "TeachingLanguage": { "IT": "الإيطالية", "EN": "الإنجليزية" },
+    "SponsorProfessionalStatus": {
+      "EMPLOYEE": "موظف",
+      "RETIRED": "متقاعد",
+      "BUSINESS_OWNER": "صاحب مؤسسة (باتيندة / سجل تجاري)",
+      "PROFESSIONAL": "مهنة حرة",
+      "UNEMPLOYED_NO_INCOME": "بلا عمل / بلا دخل",
+      "OTHER": "أخرى"
+    },
+    "PensionFund": { "CNSS": "CNSS", "CNRPS": "CNRPS", "OTHER": "صندوق آخر" },
+    "FundingSourceType": {
+      "SPONSOR": "كفيل من العائلة",
+      "SCHOLARSHIP": "منحة",
+      "INSTITUTIONAL": "تمويل مؤسسي",
+      "SELF_FUNDED": "أموال شخصية",
+      "OTHER": "مصدر آخر"
+    },
+    "Priority": { "NORMAL": "عادية", "HIGH": "عالية", "URGENT": "عاجلة" },
+    "DeclarationStatus": { "NOT_STARTED": "لم تبدأ", "IN_PROGRESS": "قيد التنفيذ", "OBTAINED": "تم الحصول عليها" },
+    "Relationship": {
+      "FATHER": "الأب",
+      "MOTHER": "الأم",
+      "SIBLING": "أخ / أخت",
+      "GRANDPARENT": "جد / جدة",
+      "UNCLE_AUNT": "عم / خال / عمة / خالة",
+      "COUSIN": "ابن / ابنة عم أو خال (قرابة دم)",
+      "SPOUSE": "الزوج / الزوجة",
+      "FRIEND": "صديق العائلة",
+      "OTHER": "آخر"
+    },
+    "SubjectType": {
+      "STUDENT": "أنت",
+      "SPONSOR": "الكفيل",
+      "FUNDING_SOURCE": "مصدر التمويل",
+      "APPLICATION": "الطلب",
+      "CASE": "الملف"
+    },
+    "Formality": {
+      "originalPresented": "تم تقديم الأصل",
+      "signed": "موقّع",
+      "stamped": "مختوم",
+      "translated": "مترجم إلى الإيطالية",
+      "legalized": "مصادق عليه",
+      "apostilled": "عليه أبوستيل"
+    }
+  }
+}

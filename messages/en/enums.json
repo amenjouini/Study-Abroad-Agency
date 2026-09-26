@@ -1,0 +1,169 @@
+{
+  "enums": {
+    "RequirementStatus": {
+      "NOT_STARTED": "Waiting for upload",
+      "REQUESTED": "Requested",
+      "UPLOADED": "Uploaded — awaiting review",
+      "UNDER_REVIEW": "Under review",
+      "APPROVED": "Approved",
+      "REJECTED": "Correction required",
+      "NEEDS_CORRECTION": "Correction required",
+      "EXPIRED": "Expired",
+      "NOT_APPLICABLE": "Not required",
+      "REQUIRES_HUMAN_REVIEW": "Our team is checking"
+    },
+    "DocumentVersionStatus": {
+      "UPLOADED": "Uploaded",
+      "UNDER_REVIEW": "Under review",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "NEEDS_CORRECTION": "Replacement requested",
+      "SUPERSEDED": "Replaced by a newer version"
+    },
+    "ApplicationStatus": {
+      "PLANNED": "Planned",
+      "PREPARING": "Preparing",
+      "SUBMITTED": "Submitted",
+      "UNDER_EVALUATION": "Under evaluation",
+      "ADDITIONAL_DOCUMENTS": "Additional documents requested",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Not admitted",
+      "WITHDRAWN": "Withdrawn",
+      "ENROLLED": "Enrolled"
+    },
+    "VisaStage": {
+      "DOCUMENT_PREPARATION": "Preparing documents",
+      "DOCUMENT_REVIEW": "Documents under review",
+      "FILE_COMPLETE": "File complete",
+      "UNIVERSITALY_VALIDATED": "Universitaly validated",
+      "APPOINTMENT_PENDING": "Waiting for the ALMAVIVA e-mail",
+      "APPOINTMENT_SCHEDULED": "Appointment scheduled",
+      "SUBMITTED": "Application submitted",
+      "PROCESSING": "Being processed",
+      "ADDITIONAL_DOCUMENTS": "Additional documents requested",
+      "APPROVED": "Decision: approved",
+      "REFUSED": "Decision: refused",
+      "PASSPORT_RETURNED": "Passport returned"
+    },
+    "UniversitalyStatus": {
+      "NOT_STARTED": "Not started",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "CORRECTIONS_REQUESTED": "Corrections requested",
+      "VALIDATED": "Validated",
+      "TRANSMITTED_TO_EMBASSY": "Transmitted to the Embassy"
+    },
+    "PaymentStatus": {
+      "PENDING": "Pending",
+      "PARTIALLY_PAID": "Partially paid",
+      "PAID": "Paid",
+      "LATE": "Late",
+      "CANCELLED": "Cancelled"
+    },
+    "AppointmentType": {
+      "GENERAL_CONSULTATION": "General consultation",
+      "DOCUMENT_PROBLEM": "Document problem",
+      "VISA_PROBLEM": "Visa problem",
+      "UNIVERSITY_PROBLEM": "University problem",
+      "SCHOLARSHIP_PROBLEM": "Scholarship problem",
+      "EMERGENCY": "Emergency",
+      "OTHER": "Other"
+    },
+    "AppointmentStatus": {
+      "REQUESTED": "Requested",
+      "CONFIRMED": "Confirmed",
+      "RESCHEDULED": "Rescheduled",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "NO_SHOW": "No-show"
+    },
+    "ScholarshipApplicationStatus": {
+      "PLANNED": "Planned",
+      "PREPARING": "Preparing",
+      "SUBMITTED": "Application submitted",
+      "UNDER_EVALUATION": "Under evaluation",
+      "AWARDED": "Awarded",
+      "REJECTED": "Not awarded",
+      "WITHDRAWN": "Withdrawn"
+    },
+    "DegreeLevel": {
+      "BACHELOR": "Bachelor (Laurea)",
+      "MASTER": "Master (Laurea Magistrale)",
+      "SINGLE_CYCLE": "Single-cycle degree",
+      "PHD": "PhD",
+      "SPECIALIZATION": "Specialization school"
+    },
+    "TeachingLanguage": { "IT": "Italian", "EN": "English" },
+    "SponsorProfessionalStatus": {
+      "EMPLOYEE": "Employee",
+      "RETIRED": "Retired",
+      "BUSINESS_OWNER": "Business owner (patente / commercial registry)",
+      "PROFESSIONAL": "Liberal profession",
+      "UNEMPLOYED_NO_INCOME": "Unemployed / no income",
+      "OTHER": "Other"
+    },
+    "PensionFund": { "CNSS": "CNSS", "CNRPS": "CNRPS", "OTHER": "Other fund" },
+    "FundingSourceType": {
+      "SPONSOR": "Family sponsor",
+      "SCHOLARSHIP": "Scholarship",
+      "INSTITUTIONAL": "Institutional funding",
+      "SELF_FUNDED": "Own funds",
+      "OTHER": "Other source"
+    },
+    "Priority": { "NORMAL": "Normal", "HIGH": "High", "URGENT": "Urgent" },
+    "DeclarationStatus": { "NOT_STARTED": "Not started", "IN_PROGRESS": "In progress", "OBTAINED": "Obtained" },
+    "Relationship": {
+      "FATHER": "Father",
+      "MOTHER": "Mother",
+      "SIBLING": "Brother / sister",
+      "GRANDPARENT": "Grandparent",
+      "UNCLE_AUNT": "Uncle / aunt",
+      "COUSIN": "Cousin (blood relative)",
+      "SPOUSE": "Spouse",
+      "FRIEND": "Family friend",
+      "OTHER": "Other"
+    },
+    "SubjectType": {
+      "STUDENT": "You",
+      "SPONSOR": "Sponsor",
+      "FUNDING_SOURCE": "Funding source",
+      "APPLICATION": "Application",
+      "CASE": "Case"
+    },
+    "Formality": {
+      "originalPresented": "Original presented",
+      "signed": "Signed",
+      "stamped": "Stamped",
+      "translated": "Translated into Italian",
+      "legalized": "Legalized",
+      "apostilled": "Apostilled"
+    },
+    "TaskStatus": { "OPEN": "Open", "IN_PROGRESS": "In progress", "DONE": "Done", "CANCELLED": "Cancelled" },
+    "HumanReviewStatus": { "OPEN": "Open", "IN_REVIEW": "In review", "RESOLVED": "Resolved" },
+    "LeadStatus": {
+      "NEW": "New",
+      "CONTACTED": "Contacted",
+      "CONSULTATION": "Consultation",
+      "INTERESTED": "Interested",
+      "REGISTERED": "Registered",
+      "LOST": "Lost",
+      "CONVERTED": "Converted"
+    },
+    "LeadSource": {
+      "INSTAGRAM": "Instagram",
+      "FACEBOOK": "Facebook",
+      "TIKTOK": "TikTok",
+      "WHATSAPP": "WhatsApp",
+      "REFERRAL": "Referral",
+      "WEBSITE": "Website",
+      "WALK_IN": "Walk-in",
+      "OTHER": "Other"
+    },
+    "ScholarshipKind": {
+      "ITALIAN_GOVERNMENT": "Italian government",
+      "REGIONAL": "Regional body",
+      "UNIVERSITY": "University",
+      "OTHER": "Other"
+    }
+  }
+}

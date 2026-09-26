@@ -1,0 +1,142 @@
+{
+  "enums": {
+    "RequirementStatus": {
+      "NOT_STARTED": "In attesa di caricamento",
+      "REQUESTED": "Richiesto",
+      "UPLOADED": "Caricato — in attesa di verifica",
+      "UNDER_REVIEW": "In verifica",
+      "APPROVED": "Approvato",
+      "REJECTED": "Correzione necessaria",
+      "NEEDS_CORRECTION": "Correzione necessaria",
+      "EXPIRED": "Scaduto",
+      "NOT_APPLICABLE": "Non richiesto",
+      "REQUIRES_HUMAN_REVIEW": "Il nostro team sta verificando"
+    },
+    "DocumentVersionStatus": {
+      "UPLOADED": "Caricato",
+      "UNDER_REVIEW": "In verifica",
+      "APPROVED": "Approvato",
+      "REJECTED": "Rifiutato",
+      "NEEDS_CORRECTION": "Sostituzione richiesta",
+      "SUPERSEDED": "Sostituito da una versione più recente"
+    },
+    "ApplicationStatus": {
+      "PLANNED": "Pianificata",
+      "PREPARING": "In preparazione",
+      "SUBMITTED": "Presentata",
+      "UNDER_EVALUATION": "In valutazione",
+      "ADDITIONAL_DOCUMENTS": "Documenti aggiuntivi richiesti",
+      "ACCEPTED": "Accettata",
+      "REJECTED": "Non ammesso",
+      "WITHDRAWN": "Ritirata",
+      "ENROLLED": "Immatricolato"
+    },
+    "VisaStage": {
+      "DOCUMENT_PREPARATION": "Preparazione dei documenti",
+      "DOCUMENT_REVIEW": "Documenti in verifica",
+      "FILE_COMPLETE": "Pratica completa",
+      "UNIVERSITALY_VALIDATED": "Universitaly validato",
+      "APPOINTMENT_PENDING": "In attesa dell'e-mail di ALMAVIVA",
+      "APPOINTMENT_SCHEDULED": "Appuntamento fissato",
+      "SUBMITTED": "Domanda presentata",
+      "PROCESSING": "In elaborazione",
+      "ADDITIONAL_DOCUMENTS": "Documenti aggiuntivi richiesti",
+      "APPROVED": "Decisione: concesso",
+      "REFUSED": "Decisione: rifiutato",
+      "PASSPORT_RETURNED": "Passaporto restituito"
+    },
+    "UniversitalyStatus": {
+      "NOT_STARTED": "Non iniziato",
+      "IN_PROGRESS": "In corso",
+      "SUBMITTED": "Inviato",
+      "CORRECTIONS_REQUESTED": "Correzioni richieste",
+      "VALIDATED": "Validato",
+      "TRANSMITTED_TO_EMBASSY": "Trasmesso all'Ambasciata"
+    },
+    "PaymentStatus": {
+      "PENDING": "In attesa",
+      "PARTIALLY_PAID": "Pagato in parte",
+      "PAID": "Pagato",
+      "LATE": "In ritardo",
+      "CANCELLED": "Annullato"
+    },
+    "AppointmentType": {
+      "GENERAL_CONSULTATION": "Consulenza generale",
+      "DOCUMENT_PROBLEM": "Problema con un documento",
+      "VISA_PROBLEM": "Problema con il visto",
+      "UNIVERSITY_PROBLEM": "Problema con l'università",
+      "SCHOLARSHIP_PROBLEM": "Problema con la borsa",
+      "EMERGENCY": "Emergenza",
+      "OTHER": "Altro"
+    },
+    "AppointmentStatus": {
+      "REQUESTED": "Richiesto",
+      "CONFIRMED": "Confermato",
+      "RESCHEDULED": "Riprogrammato",
+      "COMPLETED": "Completato",
+      "CANCELLED": "Annullato",
+      "NO_SHOW": "Assente"
+    },
+    "ScholarshipApplicationStatus": {
+      "PLANNED": "Pianificata",
+      "PREPARING": "In preparazione",
+      "SUBMITTED": "Domanda presentata",
+      "UNDER_EVALUATION": "In valutazione",
+      "AWARDED": "Assegnata",
+      "REJECTED": "Non assegnata",
+      "WITHDRAWN": "Ritirata"
+    },
+    "DegreeLevel": {
+      "BACHELOR": "Laurea triennale",
+      "MASTER": "Laurea magistrale",
+      "SINGLE_CYCLE": "Laurea a ciclo unico",
+      "PHD": "Dottorato",
+      "SPECIALIZATION": "Scuola di specializzazione"
+    },
+    "TeachingLanguage": { "IT": "Italiano", "EN": "Inglese" },
+    "SponsorProfessionalStatus": {
+      "EMPLOYEE": "Dipendente",
+      "RETIRED": "Pensionato",
+      "BUSINESS_OWNER": "Imprenditore (patente / registro delle imprese)",
+      "PROFESSIONAL": "Libero professionista",
+      "UNEMPLOYED_NO_INCOME": "Disoccupato / senza reddito",
+      "OTHER": "Altro"
+    },
+    "PensionFund": { "CNSS": "CNSS", "CNRPS": "CNRPS", "OTHER": "Altra cassa" },
+    "FundingSourceType": {
+      "SPONSOR": "Garante familiare",
+      "SCHOLARSHIP": "Borsa di studio",
+      "INSTITUTIONAL": "Finanziamento istituzionale",
+      "SELF_FUNDED": "Fondi propri",
+      "OTHER": "Altra fonte"
+    },
+    "Priority": { "NORMAL": "Normale", "HIGH": "Alta", "URGENT": "Urgente" },
+    "DeclarationStatus": { "NOT_STARTED": "Non iniziata", "IN_PROGRESS": "In corso", "OBTAINED": "Ottenuta" },
+    "Relationship": {
+      "FATHER": "Padre",
+      "MOTHER": "Madre",
+      "SIBLING": "Fratello / sorella",
+      "GRANDPARENT": "Nonno/a",
+      "UNCLE_AUNT": "Zio / zia",
+      "COUSIN": "Cugino/a (consanguineo)",
+      "SPOUSE": "Coniuge",
+      "FRIEND": "Amico di famiglia",
+      "OTHER": "Altro"
+    },
+    "SubjectType": {
+      "STUDENT": "Tu",
+      "SPONSOR": "Garante",
+      "FUNDING_SOURCE": "Fonte di finanziamento",
+      "APPLICATION": "Candidatura",
+      "CASE": "Pratica"
+    },
+    "Formality": {
+      "originalPresented": "Originale presentato",
+      "signed": "Firmato",
+      "stamped": "Timbrato",
+      "translated": "Tradotto in italiano",
+      "legalized": "Legalizzato",
+      "apostilled": "Apostillato"
+    }
+  }
+}
