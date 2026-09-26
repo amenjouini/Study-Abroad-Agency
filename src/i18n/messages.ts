@@ -21,7 +21,7 @@ export function mergeMessages(base: Messages, override: Messages): Messages {
  * (other locales fall back to French).
  */
 export const STUDENT_FRAGMENTS = ["core", "enums", "wizard", "student"] as const;
-export const STAFF_FRAGMENTS = ["staff", "admin"] as const;
+export const STAFF_FRAGMENTS = ["staff-enums", "staff", "admin"] as const;
 export const FRAGMENTS = [...STUDENT_FRAGMENTS, ...STAFF_FRAGMENTS] as const;
 
 async function loadFragments(locale: AppLocale): Promise<Messages> {

@@ -111,3 +111,16 @@ export async function markLatePayments(client: Client = db, today: string = toda
   });
   return r.count;
 }
+
+/** Staff assign a payment plan to a case (creates the payment obligations, all in the plan's currency). */
+export async function assignPaymentPlan(actor: AuthUser, caseId: string, planId?: string): Promise<number> {
+  await requirePermission(actor, "payments.write", { caseId });
+  if (actor.roleKey === "STUDENT") throw new ConflictError("Not allowed");
+  if (await db.payment.count({ where: { caseId } })) throw new ConflictError("This case already has a payment plan");
+  return db.$transaction(async (tx) => {
+    const n = await generatePaymentsFromPlan(caseId, planId, tx);
+    await writeAudit({ userId: actor.id, action: "payment.plan_assign", entity: "Case", entityId: caseId, caseId, metadata: { planId: planId ?? "default", items: n } }, tx);
+    await writeTimeline({ caseId, type: "payment.plan", title: "Payment plan set up", actorId: actor.id }, tx);
+    return n;
+  });
+}

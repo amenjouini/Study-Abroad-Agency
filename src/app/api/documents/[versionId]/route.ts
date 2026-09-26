@@ -21,7 +21,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ versionI
         "Content-Length": String(file.body.length),
         "Cache-Control": "private, no-store",
         "X-Content-Type-Options": "nosniff",
-        "Content-Security-Policy": "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:",
+        // Chromium refuses to render PDFs under a CSP sandbox; images are sandboxed.
+        ...(file.mimeType === "application/pdf" ? {} : { "Content-Security-Policy": "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:" }),
       },
     });
   } catch (e) {

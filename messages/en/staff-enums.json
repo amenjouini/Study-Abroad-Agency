@@ -1,0 +1,40 @@
+{
+  "enums": {
+    "TaskStatus": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done",
+      "CANCELLED": "Cancelled"
+    },
+    "HumanReviewStatus": {
+      "OPEN": "Open",
+      "IN_REVIEW": "In review",
+      "RESOLVED": "Resolved"
+    },
+    "LeadStatus": {
+      "NEW": "New",
+      "CONTACTED": "Contacted",
+      "CONSULTATION": "Consultation",
+      "INTERESTED": "Interested",
+      "REGISTERED": "Registered",
+      "LOST": "Lost",
+      "CONVERTED": "Converted"
+    },
+    "LeadSource": {
+      "INSTAGRAM": "Instagram",
+      "FACEBOOK": "Facebook",
+      "TIKTOK": "TikTok",
+      "WHATSAPP": "WhatsApp",
+      "REFERRAL": "Referral",
+      "WEBSITE": "Website",
+      "WALK_IN": "Walk-in",
+      "OTHER": "Other"
+    },
+    "ScholarshipKind": {
+      "ITALIAN_GOVERNMENT": "Italian government",
+      "REGIONAL": "Regional body",
+      "UNIVERSITY": "University",
+      "OTHER": "Other"
+    }
+  }
+}

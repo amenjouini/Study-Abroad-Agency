@@ -93,7 +93,10 @@
       "PHD": "PhD",
       "SPECIALIZATION": "Specialization school"
     },
-    "TeachingLanguage": { "IT": "Italian", "EN": "English" },
+    "TeachingLanguage": {
+      "IT": "Italian",
+      "EN": "English"
+    },
     "SponsorProfessionalStatus": {
       "EMPLOYEE": "Employee",
       "RETIRED": "Retired",
@@ -102,7 +105,11 @@
       "UNEMPLOYED_NO_INCOME": "Unemployed / no income",
       "OTHER": "Other"
     },
-    "PensionFund": { "CNSS": "CNSS", "CNRPS": "CNRPS", "OTHER": "Other fund" },
+    "PensionFund": {
+      "CNSS": "CNSS",
+      "CNRPS": "CNRPS",
+      "OTHER": "Other fund"
+    },
     "FundingSourceType": {
       "SPONSOR": "Family sponsor",
       "SCHOLARSHIP": "Scholarship",
@@ -110,8 +117,16 @@
       "SELF_FUNDED": "Own funds",
       "OTHER": "Other source"
     },
-    "Priority": { "NORMAL": "Normal", "HIGH": "High", "URGENT": "Urgent" },
-    "DeclarationStatus": { "NOT_STARTED": "Not started", "IN_PROGRESS": "In progress", "OBTAINED": "Obtained" },
+    "Priority": {
+      "NORMAL": "Normal",
+      "HIGH": "High",
+      "URGENT": "Urgent"
+    },
+    "DeclarationStatus": {
+      "NOT_STARTED": "Not started",
+      "IN_PROGRESS": "In progress",
+      "OBTAINED": "Obtained"
+    },
     "Relationship": {
       "FATHER": "Father",
       "MOTHER": "Mother",
@@ -137,33 +152,6 @@
       "translated": "Translated into Italian",
       "legalized": "Legalized",
       "apostilled": "Apostilled"
-    },
-    "TaskStatus": { "OPEN": "Open", "IN_PROGRESS": "In progress", "DONE": "Done", "CANCELLED": "Cancelled" },
-    "HumanReviewStatus": { "OPEN": "Open", "IN_REVIEW": "In review", "RESOLVED": "Resolved" },
-    "LeadStatus": {
-      "NEW": "New",
-      "CONTACTED": "Contacted",
-      "CONSULTATION": "Consultation",
-      "INTERESTED": "Interested",
-      "REGISTERED": "Registered",
-      "LOST": "Lost",
-      "CONVERTED": "Converted"
-    },
-    "LeadSource": {
-      "INSTAGRAM": "Instagram",
-      "FACEBOOK": "Facebook",
-      "TIKTOK": "TikTok",
-      "WHATSAPP": "WhatsApp",
-      "REFERRAL": "Referral",
-      "WEBSITE": "Website",
-      "WALK_IN": "Walk-in",
-      "OTHER": "Other"
-    },
-    "ScholarshipKind": {
-      "ITALIAN_GOVERNMENT": "Italian government",
-      "REGIONAL": "Regional body",
-      "UNIVERSITY": "University",
-      "OTHER": "Other"
     }
   }
 }

@@ -1,5 +1,10 @@
-import { NotYetAvailable } from "@/components/not-yet-available";
+import type { Metadata } from "next";
+import { AppointmentsCalendar } from "@/components/staff/appointments-calendar";
+import { requireArea } from "@/server/session";
 
-export default function Page() {
-  return <NotYetAvailable area="staff" navKey="appointments" />;
+export const metadata: Metadata = { title: "Appointments" };
+
+export default async function StaffAppointments({ searchParams }: { searchParams: Promise<{ view?: string; date?: string }> }) {
+  const user = await requireArea("staff");
+  return <AppointmentsCalendar user={user} area="staff" searchParams={await searchParams} />;
 }

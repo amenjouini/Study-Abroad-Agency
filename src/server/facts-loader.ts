@@ -116,5 +116,7 @@ export async function loadCaseFacts(caseId: string, client: Client = db, today: 
     applications,
     scholarships,
     plannedSubmissionDate: iso(c.plannedSubmissionDate),
+    confirmedRequiredAmount:
+      c.confirmedRequiredMinor != null && c.confirmedRequiredCurrency ? money(c.confirmedRequiredMinor, c.confirmedRequiredCurrency) : null,
   };
 }

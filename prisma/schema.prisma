@@ -701,6 +701,9 @@ model Case {
   evaluatedAt        DateTime?
   // Used as passport reference date when no visa appointment date is known yet
   plannedSubmissionDate DateTime? @db.Date
+  // Staff-confirmed financial requirement for programs shorter than the reference period (EUR minor units)
+  confirmedRequiredMinor    Int?
+  confirmedRequiredCurrency String?
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 
