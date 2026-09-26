@@ -53,7 +53,11 @@ export function reconcileInstances(existing: ExistingInstance[], required: Requi
     const update: InstanceUpdate = { existing: ex, required: req, calculationChanged: false };
     let changed = false;
 
-    if (req.status && ex.status !== req.status) {
+    // A human-review item that staff already cleared (APPROVED) is not re-opened by the engine.
+    const clearedReview = req.kind === "HUMAN_REVIEW" && ex.status === "APPROVED";
+    if (clearedReview) {
+      // keep staff decision
+    } else if (req.status && ex.status !== req.status) {
       update.status = req.status;
       changed = true;
     } else if (!req.status && ENGINE_OWNED.has(ex.status)) {
@@ -66,7 +70,10 @@ export function reconcileInstances(existing: ExistingInstance[], required: Requi
       update.deadline = newDeadline;
       changed = true;
     }
-    if (req.calculation !== undefined || req.humanReviewReason !== undefined) {
+    const calcChanged =
+      JSON.stringify(req.calculation ?? null) !== JSON.stringify(ex.calculation ?? null) ||
+      (req.humanReviewReason ?? null) !== (ex.humanReviewReason ?? null);
+    if (calcChanged) {
       update.calculationChanged = true;
       changed = true;
     }

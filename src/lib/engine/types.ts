@@ -58,6 +58,7 @@ export interface RequirementDef {
   mandatory: boolean;
   calculationKey?: string | null;
   reviewReason?: string | null;
+  reviewPriority?: "NORMAL" | "HIGH" | "URGENT";
   deadlineCode?: string | null;
   sortOrder: number;
   /** null = always applicable */
@@ -252,6 +253,7 @@ export interface HumanReviewFlag {
   dedupeKey: string;
   code: string;
   reason: string;
+  priority: "NORMAL" | "HIGH" | "URGENT";
   subjectType: SubjectType;
   subjectId: string;
 }
@@ -277,4 +279,5 @@ export interface ExistingInstance {
   hasDocuments: boolean;
   deadline?: ISODate | null;
   humanReviewReason?: string | null;
+  calculation?: unknown;
 }

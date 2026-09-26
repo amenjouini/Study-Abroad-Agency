@@ -365,7 +365,6 @@ model User {
   staffProfile    StaffProfile?
   consents        Consent[]
   notifications   Notification[]
-  auditLogs       AuditLog[]
   assignments     CaseAssignment[]
   uploadedVersions DocumentVersion[] @relation("UploadedBy")
 
@@ -435,6 +434,7 @@ model Consent {
 
 model AuditLog {
   id         String   @id @default(cuid())
+  // Deliberately not a foreign key: the trail must survive user deletion and can never be rewritten.
   userId     String?
   action     String
   entity     String
@@ -443,7 +443,6 @@ model AuditLog {
   ipAddress  String?
   metadata   Json?
   createdAt  DateTime @default(now())
-  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([entity, entityId])
@@ -949,6 +948,7 @@ model ProcedureRequirement {
   calculationKey     String?
   // Only for HUMAN_REVIEW requirements
   reviewReason       String?
+  reviewPriority     Priority        @default(NORMAL)
   nationality        String?
   notes              String?
   sortOrder          Int             @default(0)
@@ -1038,6 +1038,8 @@ model ProcedureDeadline {
   responsibleRole    String?
   priority           Priority      @default(NORMAL)
   mandatory          Boolean       @default(true)
+  // Statutory basis when the deadline is legal rather than administrative (e.g. art. 5 c.2 D.lgs. 286/1998)
+  legalBasis         String?
   sourceId           String?
   sourceUrl          String?
   dateVerified       DateTime?     @db.Date
@@ -1557,6 +1559,8 @@ model Notification {
   type      String
   title     String
   body      String?
+  // Parameters for the translated notification text (rendered per user locale)
+  data      Json?
   link      String?
   readAt    DateTime?
   createdAt DateTime @default(now())
@@ -1595,4 +1599,14 @@ model KnowledgeBaseArticle {
 
   @@index([language, published])
   @@map("knowledge_base_articles")
+}
+
+// Better Auth + upload rate limiting (database storage so limits hold across instances)
+model RateLimit {
+  id          String @id
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+
+  @@map("rate_limits")
 }

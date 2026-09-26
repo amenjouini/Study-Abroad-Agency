@@ -146,6 +146,7 @@ export function evaluateCase(facts: CaseFacts, proc: ProcedureDefinition): Engin
           flags.push({
             dedupeKey: `RULE_ERROR:${req.code}:${subject.id}`,
             code: "RULE_ERROR",
+            priority: "HIGH",
             reason: `Rule for ${req.code} could not be evaluated: ${e.message}`,
             subjectType: req.subjectType,
             subjectId: subject.id,
@@ -174,6 +175,7 @@ export function evaluateCase(facts: CaseFacts, proc: ProcedureDefinition): Engin
         flags.push({
           dedupeKey: `${req.code}:${subject.id}`,
           code: req.code,
+          priority: req.reviewPriority ?? "NORMAL",
           reason: `${reason} (${subject.label})`,
           subjectType: req.subjectType,
           subjectId: subject.id,
@@ -184,6 +186,7 @@ export function evaluateCase(facts: CaseFacts, proc: ProcedureDefinition): Engin
           flags.push({
             dedupeKey: `UNSUPPORTED_CALCULATION:${req.code}`,
             code: "UNSUPPORTED_CALCULATION",
+            priority: "HIGH",
             reason: `Unsupported calculation "${req.calculationKey}" on ${req.code}`,
             subjectType: req.subjectType,
             subjectId: subject.id,
@@ -202,6 +205,7 @@ export function evaluateCase(facts: CaseFacts, proc: ProcedureDefinition): Engin
     flags.push({
       dedupeKey: "REDUCED_REQUIREMENT_CONFIRMATION",
       code: "REDUCED_REQUIREMENT_CONFIRMATION",
+      priority: "NORMAL",
       reason: "Program shorter than the reference period: staff must confirm the proportionally reduced financial requirement.",
       subjectType: "CASE",
       subjectId: facts.caseId,
@@ -212,6 +216,7 @@ export function evaluateCase(facts: CaseFacts, proc: ProcedureDefinition): Engin
     flags.push({
       dedupeKey: issue,
       code,
+      priority: "NORMAL",
       reason: "A funding source in a foreign currency has no staff-entered EUR value.",
       subjectType: "FUNDING_SOURCE",
       subjectId: id,

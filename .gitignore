@@ -10,3 +10,4 @@ storage/
 src/generated/
 .vscode
 .DS_Store
+.pgdata/

@@ -4,6 +4,8 @@ export type Satisfiable = Pick<RequiredInstance, "requirementCode" | "subjectTyp
   status: RequirementStatus;
 };
 
+export type DependencyTarget = Pick<Satisfiable, "requirementCode" | "subjectType" | "subjectId">;
+
 const SATISFIED: ReadonlySet<RequirementStatus> = new Set(["APPROVED", "NOT_APPLICABLE"]);
 
 export function isSatisfied(status: RequirementStatus): boolean {
@@ -15,7 +17,7 @@ export function isSatisfied(status: RequirementStatus): boolean {
  * Prerequisites of the same subject type must belong to the same subject (father's chain vs uncle's);
  * prerequisites of another subject type (e.g. student-level) must all be satisfied.
  */
-export function blockingPrerequisites<T extends Satisfiable>(target: Satisfiable, all: T[], deps: DependencyDef[]): T[] {
+export function blockingPrerequisites<T extends Satisfiable>(target: DependencyTarget, all: T[], deps: DependencyDef[]): T[] {
   const prereqCodes = deps.filter((d) => d.requirementCode === target.requirementCode).map((d) => d.prerequisiteCode);
   if (prereqCodes.length === 0) return [];
   return all.filter((i) => {
@@ -26,7 +28,7 @@ export function blockingPrerequisites<T extends Satisfiable>(target: Satisfiable
 }
 
 export function canComplete<T extends Satisfiable>(
-  target: Satisfiable,
+  target: DependencyTarget,
   all: T[],
   deps: DependencyDef[],
 ): { ok: boolean; blockedBy: T[] } {

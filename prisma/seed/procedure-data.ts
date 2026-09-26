@@ -194,6 +194,7 @@ export interface RequirementSeed {
   deadlineCode?: string;
   calculationKey?: string;
   reviewReason?: string;
+  reviewPriority?: "NORMAL" | "HIGH" | "URGENT";
   source: SourceKey;
   /** Document type code (see DOCUMENT_TYPES) that satisfies this requirement */
   documentType?: string;
@@ -302,7 +303,7 @@ export const ITALY_2026_REQUIREMENTS: RequirementSeed[] = [
   {
     code: "BANK_BLOCKING_LETTER", subject: "STUDENT", source: "EMBASSY_NOTICE", documentType: "BANK_BLOCKING",
     // Waived only for an Italian government scholarship at or above the published minimum — not for every scholarship.
-    rule: not(and(cond("scholarship.kind", "equals", "ITALIAN_GOVERNMENT"), cond("scholarship.amountEur", "gte", { $param: PARAM.PUBLISHED_MINIMUM_TOTAL }))),
+    rule: not(and(cond("scholarship.kind", "equals", "ITALIAN_GOVERNMENT"), cond("scholarship.status", "equals", "AWARDED"), cond("scholarship.amountEur", "gte", { $param: PARAM.PUBLISHED_MINIMUM_TOTAL }))),
     formalities: ["originalPresented", "signed", "stamped"],
     names: ["Bank blocking letter (déclaration de blocage)", "Déclaration de blocage bancaire", "Dichiarazione di blocco bancario", "شهادة تجميد المبلغ البنكي"],
     why: [
@@ -361,7 +362,7 @@ export const ITALY_2026_REQUIREMENTS: RequirementSeed[] = [
     why: ["Self-funding is not listed in the Embassy notice; our team will check your situation.", "Le financement personnel n'est pas prévu dans l'avis de l'Ambassade ; notre équipe examinera votre situation."],
   },
   {
-    code: "VISA_PROGRAM_MISMATCH_REVIEW", kind: "HUMAN_REVIEW", subject: "APPLICATION", source: "EMBASSY_NOTICE",
+    code: "VISA_PROGRAM_MISMATCH_REVIEW", kind: "HUMAN_REVIEW", subject: "APPLICATION", source: "EMBASSY_NOTICE", reviewPriority: "HIGH",
     rule: cond("visa.programMismatch", "equals", true),
     reviewReason:
       "The visa program differs from the program the student intends to enrol in. Enrolling in a different course requires returning to Tunisia for a new visa.",
@@ -492,6 +493,7 @@ export function italy2026Definition(): ProcedureDefinition {
       mandatory: r.mandatory ?? true,
       calculationKey: r.calculationKey ?? null,
       reviewReason: r.reviewReason ?? null,
+      reviewPriority: r.reviewPriority ?? "NORMAL",
       deadlineCode: r.deadlineCode ?? null,
       sortOrder: i,
       rule: r.rule,
