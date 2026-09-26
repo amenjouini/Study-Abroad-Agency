@@ -1,0 +1,1598 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────── Enums ─────────────────────────
+
+enum Locale {
+  fr
+  en
+  ar
+  it
+}
+
+enum Priority {
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum CaseStatus {
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CLOSED
+}
+
+enum DegreeLevel {
+  BACHELOR
+  MASTER
+  SINGLE_CYCLE
+  PHD
+  SPECIALIZATION
+}
+
+enum TeachingLanguage {
+  IT
+  EN
+}
+
+enum SponsorProfessionalStatus {
+  EMPLOYEE
+  RETIRED
+  BUSINESS_OWNER
+  PROFESSIONAL
+  UNEMPLOYED_NO_INCOME
+  OTHER
+}
+
+enum PensionFund {
+  CNSS
+  CNRPS
+  OTHER
+}
+
+enum FundingSourceType {
+  SPONSOR
+  SCHOLARSHIP
+  INSTITUTIONAL
+  SELF_FUNDED
+  OTHER
+}
+
+enum ScholarshipKind {
+  ITALIAN_GOVERNMENT
+  REGIONAL
+  UNIVERSITY
+  OTHER
+}
+
+enum ScholarshipApplicationStatus {
+  PLANNED
+  PREPARING
+  SUBMITTED
+  UNDER_EVALUATION
+  AWARDED
+  REJECTED
+  WITHDRAWN
+}
+
+enum ApplicationStatus {
+  PLANNED
+  PREPARING
+  SUBMITTED
+  UNDER_EVALUATION
+  ADDITIONAL_DOCUMENTS
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  ENROLLED
+}
+
+enum VisaStage {
+  DOCUMENT_PREPARATION
+  DOCUMENT_REVIEW
+  FILE_COMPLETE
+  UNIVERSITALY_VALIDATED
+  APPOINTMENT_PENDING
+  APPOINTMENT_SCHEDULED
+  SUBMITTED
+  PROCESSING
+  ADDITIONAL_DOCUMENTS
+  APPROVED
+  REFUSED
+  PASSPORT_RETURNED
+}
+
+enum UniversitalyStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  CORRECTIONS_REQUESTED
+  VALIDATED
+  TRANSMITTED_TO_EMBASSY
+}
+
+enum ProcedureVersionStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum RuleOperator {
+  equals
+  not_equals
+  in
+  not_in
+  gt
+  gte
+  lt
+  lte
+  between
+  before
+  after
+  exists
+  not_exists
+}
+
+enum RuleGroupOperator {
+  AND
+  OR
+  NOT
+}
+
+enum RuleValueType {
+  STRING
+  ENUM
+  NUMBER
+  CURRENCY
+  DATE
+  BOOLEAN
+  CALCULATED
+}
+
+enum SubjectType {
+  CASE
+  STUDENT
+  SPONSOR
+  FUNDING_SOURCE
+  APPLICATION
+}
+
+enum RequirementKind {
+  DOCUMENT
+  CALCULATED
+  HUMAN_REVIEW
+}
+
+enum RequirementStatus {
+  NOT_STARTED
+  REQUESTED
+  UPLOADED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  NEEDS_CORRECTION
+  EXPIRED
+  NOT_APPLICABLE
+  REQUIRES_HUMAN_REVIEW
+}
+
+enum DocumentVersionStatus {
+  UPLOADED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  NEEDS_CORRECTION
+  SUPERSEDED
+}
+
+enum ReviewDecision {
+  APPROVE
+  REJECT
+  REQUEST_REPLACEMENT
+  COMMENT
+}
+
+enum DeadlineKind {
+  FIXED_DATE
+  OFFSET
+}
+
+enum DayType {
+  CALENDAR_DAYS
+  WORKING_DAYS
+}
+
+enum DeadlineScope {
+  GENERAL
+  UNIVERSITY
+  PROGRAM
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  LATE
+  CANCELLED
+}
+
+enum AppointmentType {
+  GENERAL_CONSULTATION
+  DOCUMENT_PROBLEM
+  VISA_PROBLEM
+  UNIVERSITY_PROBLEM
+  SCHOLARSHIP_PROBLEM
+  EMERGENCY
+  OTHER
+}
+
+enum AppointmentStatus {
+  REQUESTED
+  CONFIRMED
+  RESCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum SlotKind {
+  OPEN
+  BLOCKED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CONSULTATION
+  INTERESTED
+  REGISTERED
+  LOST
+  CONVERTED
+}
+
+enum LeadSource {
+  INSTAGRAM
+  FACEBOOK
+  TIKTOK
+  WHATSAPP
+  REFERRAL
+  WEBSITE
+  WALK_IN
+  OTHER
+}
+
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum HumanReviewSource {
+  ENGINE
+  STUDENT_HELP
+  STAFF
+  VISA_MISMATCH
+}
+
+enum HumanReviewStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+}
+
+enum DeclarationStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  OBTAINED
+}
+
+// ───────────────────────── Auth & RBAC ─────────────────────────
+
+model Role {
+  id          String           @id @default(cuid())
+  key         String           @unique // OWNER | ADMIN | STAFF | STUDENT
+  name        String
+  isSystem    Boolean          @default(true)
+  permissions RolePermission[]
+  users       User[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  key         String           @unique // e.g. documents.review
+  area        String
+  description String
+  roles       RolePermission[]
+  users       UserPermission[]
+
+  @@index([area])
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// Per-user grant (granted=true) or revoke (granted=false) on top of the role.
+model UserPermission {
+  userId       String
+  permissionId String
+  granted      Boolean    @default(true)
+  // When set, the permission applies to every case (wider than assigned cases).
+  allCases     Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@map("user_permissions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  roleId        String
+  locale        Locale    @default(fr)
+  phone         String?
+  active        Boolean   @default(true)
+
+  role            Role             @relation(fields: [roleId], references: [id])
+  sessions        Session[]
+  accounts        Account[]
+  extraPerms      UserPermission[]
+  student         Student?
+  staffProfile    StaffProfile?
+  consents        Consent[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+  assignments     CaseAssignment[]
+  uploadedVersions DocumentVersion[] @relation("UploadedBy")
+
+  @@index([roleId])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+model Consent {
+  id            String   @id @default(cuid())
+  userId        String
+  type          String // PRIVACY_POLICY | DATA_PROCESSING
+  policyVersion String
+  acceptedAt    DateTime @default(now())
+  ipAddress     String?
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("consents")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  action     String
+  entity     String
+  entityId   String?
+  caseId     String?
+  ipAddress  String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([caseId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model SystemSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+// ───────────────────────── Reference data ─────────────────────────
+
+model Country {
+  id           String      @id @default(cuid())
+  code         String      @unique // ISO 3166-1 alpha-2
+  name         String
+  nameI18n     Json?
+  regions      Region[]
+  holidays     Holiday[]
+  procedures   Procedure[] @relation("Destination")
+  originProcs  Procedure[] @relation("Origin")
+
+  @@map("countries")
+}
+
+model Region {
+  id        String       @id @default(cuid())
+  countryId String
+  name      String
+  country   Country      @relation(fields: [countryId], references: [id])
+  cities    City[]
+  scholarships Scholarship[]
+
+  @@unique([countryId, name])
+  @@map("regions")
+}
+
+model City {
+  id           String       @id @default(cuid())
+  regionId     String
+  name         String
+  region       Region       @relation(fields: [regionId], references: [id])
+  universities University[]
+  students     Student[]
+
+  @@unique([regionId, name])
+  @@map("cities")
+}
+
+model AcademicYear {
+  id        String   @id @default(cuid())
+  label     String   @unique // 2026/27
+  startYear Int      @unique
+  isCurrent Boolean  @default(false)
+  startsOn  DateTime @db.Date
+  endsOn    DateTime @db.Date
+
+  procedureVersions   ProcedureVersion[]
+  programs            UniversityProgram[]
+  applications        UniversityApplication[]
+  scholarshipVersions ScholarshipVersion[]
+  articles            KnowledgeBaseArticle[]
+
+  @@map("academic_years")
+}
+
+model University {
+  id                    String              @id @default(cuid())
+  cityId                String
+  name                  String
+  website               String?
+  // University-level visa appointment deadline (optional; earliest wins)
+  visaAppointmentDeadline DateTime?         @db.Date
+  active                Boolean             @default(true)
+  city                  City                @relation(fields: [cityId], references: [id])
+  programs              UniversityProgram[]
+  applications          UniversityApplication[]
+  deadlines             ProcedureDeadline[]
+
+  @@index([cityId])
+  @@map("universities")
+}
+
+model UniversityProgram {
+  id                      String           @id @default(cuid())
+  universityId            String
+  academicYearId          String
+  name                    String
+  degreeLevel             DegreeLevel
+  language                TeachingLanguage
+  durationMonths          Int
+  // Program-level visa appointment deadline (optional; earliest wins)
+  visaAppointmentDeadline DateTime?        @db.Date
+  applicationDeadline     DateTime?        @db.Date
+  applicationFeeMinor     Int?
+  applicationFeeCurrency  String?
+  active                  Boolean          @default(true)
+  university              University       @relation(fields: [universityId], references: [id])
+  academicYear            AcademicYear     @relation(fields: [academicYearId], references: [id])
+  applications            UniversityApplication[]
+  visaProgramCases        VisaCase[]       @relation("VisaProgram")
+  intendedEnrollCases     VisaCase[]       @relation("IntendedEnrollmentProgram")
+  students                Student[]        @relation("DesiredProgram")
+
+  @@index([universityId])
+  @@index([academicYearId])
+  @@map("university_programs")
+}
+
+model Holiday {
+  id        String   @id @default(cuid())
+  countryId String
+  date      DateTime @db.Date
+  name      String
+  country   Country  @relation(fields: [countryId], references: [id])
+
+  @@unique([countryId, date])
+  @@index([date])
+  @@map("holidays")
+}
+
+// ───────────────────────── People & cases ─────────────────────────
+
+model StaffProfile {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  title     String?
+  phone     String?
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leads     Lead[]
+  tasks     Task[]
+
+  @@map("staff_profiles")
+}
+
+model Student {
+  id                 String            @id @default(cuid())
+  userId             String            @unique
+  firstName          String
+  lastName           String
+  phone              String?
+  dateOfBirth        DateTime?         @db.Date
+  gender             String?
+  nationality        String            @default("TN") // ISO alpha-2
+  passportNumber     String?
+  passportExpiry     DateTime?         @db.Date
+  address            String?
+  // Study preferences
+  studyLanguage      TeachingLanguage?
+  languageLevel      String? // current level, e.g. B1
+  languageCertificate String?
+  languageCertificateLevel String?
+  languageCertificateExpiry DateTime? @db.Date
+  // Academic profile
+  bacYear            Int?
+  bacSection         String?
+  bacGrade           Decimal?          @db.Decimal(5, 2)
+  desiredDegreeLevel DegreeLevel?
+  declarationStatus  DeclarationStatus @default(NOT_STARTED)
+  cimeaStatus        DeclarationStatus @default(NOT_STARTED)
+  desiredCityId      String?
+  desiredProgramId   String?
+  wantsScholarship   Boolean?
+  // Onboarding
+  onboardingStep     Int               @default(1)
+  onboardingCompleted Boolean          @default(false)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  desiredCity    City?               @relation(fields: [desiredCityId], references: [id])
+  desiredProgram UniversityProgram?  @relation("DesiredProgram", fields: [desiredProgramId], references: [id])
+  degrees        StudentDegree[]
+  cases          Case[]
+  sponsors       Sponsor[]
+  lead           Lead?
+
+  @@index([lastName, firstName])
+  @@index([passportNumber])
+  @@index([desiredCityId])
+  @@map("students")
+}
+
+model StudentDegree {
+  id          String   @id @default(cuid())
+  studentId   String
+  level       DegreeLevel
+  title       String
+  institution String?
+  year        Int?
+  grade       String?
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+  @@map("student_degrees")
+}
+
+model Lead {
+  id                 String     @id @default(cuid())
+  firstName          String
+  lastName           String
+  phone              String?
+  email              String?
+  preferredLocale    Locale     @default(fr)
+  intendedDegree     DegreeLevel?
+  intendedCityId     String?
+  source             LeadSource @default(OTHER)
+  notes              String?
+  assignedStaffId    String?
+  status             LeadStatus @default(NEW)
+  convertedStudentId String?    @unique
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  assignedStaff      StaffProfile? @relation(fields: [assignedStaffId], references: [id])
+  convertedStudent   Student?   @relation(fields: [convertedStudentId], references: [id])
+
+  @@index([status])
+  @@index([assignedStaffId])
+  @@map("leads")
+}
+
+model CaseStage {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  nameI18n  Json?
+  sortOrder Int
+  // Weight used for progress calculation (share of the journey completed at this stage)
+  progressPercent Int @default(0)
+  active    Boolean  @default(true)
+  cases     Case[]
+  historyTo   CaseStageHistory[] @relation("StageTo")
+  historyFrom CaseStageHistory[] @relation("StageFrom")
+
+  @@map("case_stages")
+}
+
+model Case {
+  id                 String       @id @default(cuid())
+  caseNumber         String       @unique
+  studentId          String
+  procedureVersionId String
+  currentStageId     String
+  status             CaseStatus   @default(ACTIVE)
+  requiresHumanReview Boolean     @default(false)
+  humanReviewPriority Priority?
+  // Last engine evaluation output (calculated values: funding, deadlines, passport check)
+  engineSnapshot     Json?
+  evaluatedAt        DateTime?
+  // Used as passport reference date when no visa appointment date is known yet
+  plannedSubmissionDate DateTime? @db.Date
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  student          Student          @relation(fields: [studentId], references: [id])
+  procedureVersion ProcedureVersion @relation(fields: [procedureVersionId], references: [id])
+  currentStage     CaseStage        @relation(fields: [currentStageId], references: [id])
+  assignments      CaseAssignment[]
+  stageHistory     CaseStageHistory[]
+  applications     UniversityApplication[]
+  instances        DocumentRequirementInstance[]
+  documents        Document[]
+  fundingSources   FundingSource[]
+  sponsors         Sponsor[]
+  scholarshipApps  ScholarshipApplication[]
+  payments         Payment[]
+  appointments     AgencyAppointment[]
+  tasks            Task[]
+  notes            Note[]
+  messages         Message[]
+  reviewItems      HumanReviewItem[]
+  timeline         TimelineEntry[]
+  notifications    Notification[]
+
+  @@index([studentId])
+  @@index([procedureVersionId])
+  @@index([currentStageId])
+  @@index([status])
+  @@index([requiresHumanReview])
+  @@map("cases")
+}
+
+model CaseAssignment {
+  id        String   @id @default(cuid())
+  caseId    String
+  userId    String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  case      Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([caseId, userId])
+  @@index([userId])
+  @@map("case_assignments")
+}
+
+model CaseStageHistory {
+  id          String    @id @default(cuid())
+  caseId      String
+  fromStageId String?
+  toStageId   String
+  changedById String?
+  note        String?
+  createdAt   DateTime  @default(now())
+  case        Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  fromStage   CaseStage? @relation("StageFrom", fields: [fromStageId], references: [id])
+  toStage     CaseStage @relation("StageTo", fields: [toStageId], references: [id])
+
+  @@index([caseId])
+  @@map("case_stage_history")
+}
+
+// Central case timeline (document uploaded/approved, payment recorded, visa stage changed, re-evaluations…)
+model TimelineEntry {
+  id        String   @id @default(cuid())
+  caseId    String
+  type      String
+  title     String
+  detail    String?
+  // Entries visible to the student. Internal entries are staff-only.
+  visibleToStudent Boolean @default(true)
+  actorId   String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  case      Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@index([caseId, createdAt])
+  @@map("timeline_entries")
+}
+
+// ───────────────────────── Applications, Universitaly, Visa ─────────────────────────
+
+model UniversityApplication {
+  id                 String            @id @default(cuid())
+  caseId             String
+  universityId       String
+  programId          String
+  academicYearId     String
+  status             ApplicationStatus @default(PLANNED)
+  deadline           DateTime?         @db.Date
+  applicationFeeMinor Int?
+  applicationFeeCurrency String?
+  admissionResult    String?
+  admissionDocumentId String?
+  conditions         String?
+  notes              String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  case          Case              @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  university    University        @relation(fields: [universityId], references: [id])
+  program       UniversityProgram @relation(fields: [programId], references: [id])
+  academicYear  AcademicYear      @relation(fields: [academicYearId], references: [id])
+  universitaly  UniversitalyCase?
+  visa          VisaCase?
+  fundingAllocations FundingAllocation[]
+
+  @@index([caseId])
+  @@index([universityId])
+  @@index([programId])
+  @@index([status])
+  @@index([deadline])
+  @@map("university_applications")
+}
+
+model UniversitalyCase {
+  id                    String             @id @default(cuid())
+  applicationId         String             @unique
+  contactEmail          String?
+  referenceId           String?
+  submissionDate        DateTime?          @db.Date
+  status                UniversitalyStatus @default(NOT_STARTED)
+  validationStatus      String?
+  correctionsRequested  String?
+  transmittedToEmbassy  Boolean            @default(false)
+  transmittedAt         DateTime?          @db.Date
+  notes                 String?
+  updatedAt             DateTime           @updatedAt
+  application           UniversityApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("universitaly_cases")
+}
+
+model VisaCase {
+  id                  String    @id @default(cuid())
+  applicationId       String    @unique
+  visaType            String    @default("STUDY_UNIVERSITY_ENROLLMENT")
+  stage               VisaStage @default(DOCUMENT_PREPARATION)
+  // The program the visa was requested for vs the program the student intends to enrol in.
+  programId           String
+  intendedEnrollmentProgramId String
+  appointmentAt       DateTime?
+  appointmentSource   String    @default("ALMAVIVA")
+  submissionDate      DateTime? @db.Date
+  reference           String?
+  decision            String?
+  additionalRequests  String?
+  notes               String?
+  arrivalDate         DateTime? @db.Date
+  // Permesso di soggiorno: both deadlines stored with source and calculation method
+  permessoLegalDeadline        DateTime? @db.Date
+  permessoLegalMethod          DayType?
+  permessoLegalSource          String?
+  permessoConservativeDeadline DateTime? @db.Date
+  permessoConservativeMethod   DayType?
+  permessoConservativeSource   String?
+  updatedAt           DateTime  @updatedAt
+
+  application         UniversityApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  program             UniversityProgram @relation("VisaProgram", fields: [programId], references: [id])
+  intendedProgram     UniversityProgram @relation("IntendedEnrollmentProgram", fields: [intendedEnrollmentProgramId], references: [id])
+
+  @@index([stage])
+  @@index([appointmentAt])
+  @@map("visa_cases")
+}
+
+// ───────────────────────── Procedures ─────────────────────────
+
+model Procedure {
+  id                   String   @id @default(cuid())
+  key                  String   @unique
+  name                 String
+  originCountryId      String // nationality/origin country
+  destinationCountryId String
+  originCountry        Country  @relation("Origin", fields: [originCountryId], references: [id])
+  destinationCountry   Country  @relation("Destination", fields: [destinationCountryId], references: [id])
+  versions             ProcedureVersion[]
+
+  @@map("procedures")
+}
+
+model ProcedureSource {
+  id           String   @id @default(cuid())
+  name         String
+  url          String
+  dateVerified DateTime @db.Date
+  notes        String?
+  requirements ProcedureRequirement[]
+  deadlines    ProcedureDeadline[]
+  parameters   ProcedureParameter[]
+
+  @@map("procedure_sources")
+}
+
+model ProcedureVersion {
+  id             String                 @id @default(cuid())
+  procedureId    String
+  academicYearId String
+  versionNumber  Int
+  status         ProcedureVersionStatus @default(DRAFT)
+  notes          String?
+  activatedAt    DateTime?
+  createdAt      DateTime               @default(now())
+  procedure      Procedure              @relation(fields: [procedureId], references: [id])
+  academicYear   AcademicYear           @relation(fields: [academicYearId], references: [id])
+  requirements   ProcedureRequirement[]
+  ruleGroups     ProcedureRuleGroup[]
+  deadlines      ProcedureDeadline[]
+  parameters     ProcedureParameter[]
+  cases          Case[]
+
+  @@unique([procedureId, academicYearId, versionNumber])
+  @@index([status])
+  @@map("procedure_versions")
+}
+
+// Typed values of a procedure version: amounts, months, thresholds, allowed relationships…
+model ProcedureParameter {
+  id                 String           @id @default(cuid())
+  procedureVersionId String
+  key                String
+  value              Json // { "amountMinor": 1017985, "currency": "EUR" } | number | string[] | …
+  description        String?
+  sourceId           String?
+  version            ProcedureVersion @relation(fields: [procedureVersionId], references: [id], onDelete: Cascade)
+  source             ProcedureSource? @relation(fields: [sourceId], references: [id])
+
+  @@unique([procedureVersionId, key])
+  @@map("procedure_parameters")
+}
+
+model ProcedureRequirement {
+  id                 String          @id @default(cuid())
+  procedureVersionId String
+  code               String
+  kind               RequirementKind @default(DOCUMENT)
+  subjectType        SubjectType
+  name               String
+  nameI18n           Json?
+  description        String?
+  // Student-facing plain explanation ("Why do we need this?")
+  whyI18n            Json?
+  mandatory          Boolean         @default(true)
+  // Only for CALCULATED requirements (e.g. PASSPORT_VALIDITY)
+  calculationKey     String?
+  // Only for HUMAN_REVIEW requirements
+  reviewReason       String?
+  nationality        String?
+  notes              String?
+  sortOrder          Int             @default(0)
+  // Root of the condition tree deciding applicability. NULL = always applicable.
+  ruleGroupId        String?         @unique
+  deadlineCode       String?
+  sourceId           String?
+  sourceUrl          String?
+  dateVerified       DateTime?       @db.Date
+  // Formalities required for this requirement (originalPresented, signed, stamped, translated, legalized, apostilled)
+  requiredFormalities String[]       @default([])
+  version            ProcedureVersion @relation(fields: [procedureVersionId], references: [id], onDelete: Cascade)
+  source             ProcedureSource? @relation(fields: [sourceId], references: [id])
+  ruleGroup          ProcedureRuleGroup? @relation("RequirementRoot", fields: [ruleGroupId], references: [id])
+  documentRequirements DocumentRequirement[]
+  instances          DocumentRequirementInstance[]
+  dependsOn          RequirementDependency[] @relation("Dependent")
+  prerequisiteOf     RequirementDependency[] @relation("Prerequisite")
+
+  @@unique([procedureVersionId, code])
+  @@index([procedureVersionId])
+  @@map("procedure_requirements")
+}
+
+model RequirementDependency {
+  id             String @id @default(cuid())
+  requirementId  String // the dependent one
+  prerequisiteId String
+  requirement    ProcedureRequirement @relation("Dependent", fields: [requirementId], references: [id], onDelete: Cascade)
+  prerequisite   ProcedureRequirement @relation("Prerequisite", fields: [prerequisiteId], references: [id], onDelete: Cascade)
+
+  @@unique([requirementId, prerequisiteId])
+  @@index([prerequisiteId])
+  @@map("requirement_dependencies")
+}
+
+model ProcedureRuleGroup {
+  id                 String            @id @default(cuid())
+  procedureVersionId String
+  parentId           String?
+  operator           RuleGroupOperator @default(AND)
+  sortOrder          Int               @default(0)
+  label              String?
+  version            ProcedureVersion  @relation(fields: [procedureVersionId], references: [id], onDelete: Cascade)
+  parent             ProcedureRuleGroup? @relation("GroupTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children           ProcedureRuleGroup[] @relation("GroupTree")
+  conditions         ProcedureRuleCondition[]
+  requirement        ProcedureRequirement? @relation("RequirementRoot")
+
+  @@index([procedureVersionId])
+  @@index([parentId])
+  @@map("procedure_rule_groups")
+}
+
+model ProcedureRuleCondition {
+  id        String        @id @default(cuid())
+  groupId   String
+  sortOrder Int           @default(0)
+  // Dotted field path, e.g. sponsor.relationship, program.language, scholarship.kind
+  field     String
+  operator  RuleOperator
+  valueType RuleValueType @default(STRING)
+  // Literal value, array (in / between) or reference: {"$param": "key"} / {"$field": "path"}
+  value     Json?
+  group     ProcedureRuleGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@map("procedure_rule_conditions")
+}
+
+model ProcedureDeadline {
+  id                 String        @id @default(cuid())
+  procedureVersionId String
+  universityId       String?
+  code               String
+  name               String
+  description        String?
+  scope              DeadlineScope @default(GENERAL)
+  kind               DeadlineKind
+  fixedDate          DateTime?     @db.Timestamp(3)
+  // OFFSET deadlines: basis is a fact path (e.g. visa.arrivalDate) plus a number of days
+  offsetBasis        String?
+  offsetDays         Int?
+  dayType            DayType       @default(CALENDAR_DAYS)
+  holidayCountryCode String?
+  reminderDays       Int[]         @default([30, 14, 7, 3, 1])
+  responsibleRole    String?
+  priority           Priority      @default(NORMAL)
+  mandatory          Boolean       @default(true)
+  sourceId           String?
+  sourceUrl          String?
+  dateVerified       DateTime?     @db.Date
+  notes              String?
+  version            ProcedureVersion @relation(fields: [procedureVersionId], references: [id], onDelete: Cascade)
+  university         University?   @relation(fields: [universityId], references: [id])
+  source             ProcedureSource? @relation(fields: [sourceId], references: [id])
+
+  @@unique([procedureVersionId, code])
+  @@index([procedureVersionId])
+  @@index([fixedDate])
+  @@map("procedure_deadlines")
+}
+
+// ───────────────────────── Documents ─────────────────────────
+
+model DocumentType {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  name          String
+  nameI18n      Json?
+  description   String?
+  acceptedMimeTypes String[] @default(["application/pdf", "image/jpeg", "image/png"])
+  maxBytes      Int?
+  active        Boolean  @default(true)
+  requirements  DocumentRequirement[]
+
+  @@map("document_types")
+}
+
+// Document specification attached to a procedure requirement: which document type satisfies it.
+model DocumentRequirement {
+  id              String   @id @default(cuid())
+  requirementId   String
+  documentTypeId  String
+  helpI18n        Json?
+  requiredFormalities String[] @default([])
+  requirement     ProcedureRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  documentType    DocumentType @relation(fields: [documentTypeId], references: [id])
+
+  @@unique([requirementId, documentTypeId])
+  @@map("document_requirements")
+}
+
+model DocumentRequirementInstance {
+  id            String            @id @default(cuid())
+  caseId        String
+  requirementId String
+  subjectType   SubjectType
+  subjectId     String // student id, sponsor id, funding source id, application id, or case id
+  subjectLabel  String? // "Father", "Uncle", "University of Florence"…
+  status        RequirementStatus @default(NOT_STARTED)
+  deadline      DateTime?         @db.Timestamp(3)
+  reviewerId    String?
+  reviewedAt    DateTime?
+  rejectionReason String?
+  // Calculated results (passport check etc.) + human-review reason
+  calculation   Json?
+  referenceDate DateTime?         @db.Date
+  humanReviewReason String?
+  // Kept when the instance stops applying (status NOT_APPLICABLE); never deleted.
+  previousStatus RequirementStatus?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  case          Case                 @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  requirement   ProcedureRequirement @relation(fields: [requirementId], references: [id])
+  documents     Document[]
+  history       RequirementInstanceHistory[]
+
+  @@unique([caseId, requirementId, subjectType, subjectId])
+  @@index([caseId])
+  @@index([status])
+  @@index([deadline])
+  @@index([requirementId])
+  @@map("document_requirement_instances")
+}
+
+model RequirementInstanceHistory {
+  id         String   @id @default(cuid())
+  instanceId String
+  fromStatus RequirementStatus?
+  toStatus   RequirementStatus
+  actorId    String?
+  reason     String?
+  createdAt  DateTime @default(now())
+  instance   DocumentRequirementInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@index([instanceId])
+  @@map("requirement_instance_history")
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  caseId     String
+  instanceId String
+  createdAt  DateTime @default(now())
+  case       Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  instance   DocumentRequirementInstance @relation(fields: [instanceId], references: [id])
+  versions   DocumentVersion[]
+  attachments MessageAttachment[]
+
+  @@index([caseId])
+  @@index([instanceId])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id             String                @id @default(cuid())
+  documentId     String
+  versionNumber  Int
+  storageKey     String
+  filename       String
+  mimeType       String
+  sizeBytes      Int
+  sha256         String
+  uploadedById   String
+  uploadedAt     DateTime              @default(now())
+  status         DocumentVersionStatus @default(UPLOADED)
+  reviewerId     String?
+  reviewedAt     DateTime?
+  rejectionReason String?
+  comments       String?
+  // Formalities are tracked separately per version
+  originalPresented Boolean @default(false)
+  signed         Boolean @default(false)
+  stamped        Boolean @default(false)
+  translated     Boolean @default(false)
+  legalized      Boolean @default(false)
+  apostilled     Boolean @default(false)
+  approved       Boolean @default(false)
+  supersededAt   DateTime?
+
+  document       Document              @relation(fields: [documentId], references: [id])
+  uploadedBy     User                  @relation("UploadedBy", fields: [uploadedById], references: [id])
+  reviews        DocumentReview[]
+
+  @@unique([documentId, versionNumber])
+  @@index([status])
+  @@index([uploadedById])
+  @@map("document_versions")
+}
+
+model DocumentReview {
+  id         String         @id @default(cuid())
+  versionId  String
+  reviewerId String
+  decision   ReviewDecision
+  reason     String?
+  comment    String?
+  // Comments can be internal (staff-only)
+  internal   Boolean        @default(false)
+  formalities Json?
+  createdAt  DateTime       @default(now())
+  version    DocumentVersion @relation(fields: [versionId], references: [id])
+
+  @@index([versionId])
+  @@map("document_reviews")
+}
+
+// ───────────────────────── Funding ─────────────────────────
+
+model SponsorRelationship {
+  id            String    @id @default(cuid())
+  code          String    @unique // FATHER, MOTHER, SIBLING, GRANDPARENT, UNCLE_AUNT, COUSIN, FRIEND, OTHER…
+  name          String
+  nameI18n      Json?
+  kinshipDegree Int? // NULL when not a relative
+  sponsors      Sponsor[]
+
+  @@map("sponsor_relationships")
+}
+
+model Sponsor {
+  id                  String                     @id @default(cuid())
+  studentId           String
+  caseId              String
+  fullName            String
+  relationshipId      String
+  professionalStatus  SponsorProfessionalStatus?
+  pensionFund         PensionFund?
+  occupation          String?
+  // For UNEMPLOYED_NO_INCOME: who funds the student and the source of funds
+  fundedByDescription String?
+  sourceOfFunds       String?
+  identityNumber      String?
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  student             Student                    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  case                Case                       @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  relationship        SponsorRelationship        @relation(fields: [relationshipId], references: [id])
+  fundingSources      FundingSource[]
+
+  @@index([studentId])
+  @@index([caseId])
+  @@map("sponsors")
+}
+
+model FundingSource {
+  id                     String            @id @default(cuid())
+  caseId                 String
+  type                   FundingSourceType
+  sponsorId              String?
+  scholarshipApplicationId String?
+  description            String?
+  sourceOfFunds          String?
+  amountMinor            Int
+  currency               String
+  // Staff-entered EUR value when the source is not in EUR
+  eurValueMinor          Int?
+  exchangeRate           Decimal?          @db.Decimal(14, 6)
+  exchangeRateDate       DateTime?         @db.Date
+  convertedById          String?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  case                   Case              @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  sponsor                Sponsor?          @relation(fields: [sponsorId], references: [id])
+  scholarshipApplication ScholarshipApplication? @relation(fields: [scholarshipApplicationId], references: [id])
+  allocations            FundingAllocation[]
+
+  @@index([caseId])
+  @@index([sponsorId])
+  @@map("funding_sources")
+}
+
+model FundingAllocation {
+  id               String   @id @default(cuid())
+  fundingSourceId  String
+  applicationId    String?
+  purpose          String
+  amountMinor      Int
+  currency         String
+  createdAt        DateTime @default(now())
+  fundingSource    FundingSource @relation(fields: [fundingSourceId], references: [id], onDelete: Cascade)
+  application      UniversityApplication? @relation(fields: [applicationId], references: [id])
+
+  @@index([fundingSourceId])
+  @@map("funding_allocations")
+}
+
+// ───────────────────────── Scholarships ─────────────────────────
+
+model Scholarship {
+  id          String          @id @default(cuid())
+  name        String
+  kind        ScholarshipKind @default(REGIONAL)
+  regionId    String?
+  officialUrl String?
+  active      Boolean         @default(true)
+  region      Region?         @relation(fields: [regionId], references: [id])
+  versions    ScholarshipVersion[]
+
+  @@map("scholarships")
+}
+
+model ScholarshipVersion {
+  id               String       @id @default(cuid())
+  scholarshipId    String
+  academicYearId   String
+  eligibility      String?
+  openingDate      DateTime?    @db.Timestamp(3)
+  deadline         DateTime?    @db.Timestamp(3)
+  // e.g. doctoral schools have a different window
+  extraDeadlines   Json?
+  requiredDocuments Json?
+  iseeMaxMinor     Int?
+  ispeMaxMinor     Int?
+  thresholdCurrency String?
+  benefits         Json?
+  amountMinor      Int?
+  amountCurrency   String?
+  notes            String?
+  sourceName       String?
+  sourceUrl        String?
+  dateVerified     DateTime?    @db.Date
+  scholarship      Scholarship  @relation(fields: [scholarshipId], references: [id])
+  academicYear     AcademicYear @relation(fields: [academicYearId], references: [id])
+  applications     ScholarshipApplication[]
+
+  @@unique([scholarshipId, academicYearId])
+  @@map("scholarship_versions")
+}
+
+model ScholarshipApplication {
+  id                   String                       @id @default(cuid())
+  caseId               String
+  scholarshipVersionId String
+  status               ScholarshipApplicationStatus @default(PLANNED)
+  submittedAt          DateTime?
+  awardedAmountMinor   Int?
+  awardedCurrency      String?
+  notes                String?
+  createdAt            DateTime                     @default(now())
+  updatedAt            DateTime                     @updatedAt
+  case                 Case                         @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  scholarshipVersion   ScholarshipVersion           @relation(fields: [scholarshipVersionId], references: [id])
+  fundingSources       FundingSource[]
+
+  @@index([caseId])
+  @@index([status])
+  @@map("scholarship_applications")
+}
+
+// ───────────────────────── Payments ─────────────────────────
+
+// Admin-configured template (e.g. 300 + 500 + 700 + 500 TND)
+model PaymentPlan {
+  id        String   @id @default(cuid())
+  name      String
+  currency  String   @default("TND")
+  isDefault Boolean  @default(false)
+  active    Boolean  @default(true)
+  items     PaymentPlanItem[]
+
+  @@map("payment_plans")
+}
+
+model PaymentPlanItem {
+  id          String  @id @default(cuid())
+  planId      String
+  name        String
+  amountMinor Int
+  dueOffsetDays Int   @default(0)
+  sortOrder   Int     @default(0)
+  plan        PaymentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@map("payment_plan_items")
+}
+
+// A payment obligation on a case, generated from a plan item.
+model Payment {
+  id           String        @id @default(cuid())
+  caseId       String
+  name         String
+  amountMinor  Int
+  currency     String
+  dueDate      DateTime?     @db.Date
+  status       PaymentStatus @default(PENDING)
+  sortOrder    Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  case         Case          @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  transactions PaymentTransaction[]
+
+  @@index([caseId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("payments")
+}
+
+model PaymentTransaction {
+  id           String   @id @default(cuid())
+  paymentId    String
+  amountMinor  Int
+  currency     String
+  paidAt       DateTime @db.Date
+  method       String
+  reference    String?
+  receiptStorageKey String?
+  receiptFilename String?
+  notes        String?
+  recordedById String
+  createdAt    DateTime @default(now())
+  payment      Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([reference])
+  @@map("payment_transactions")
+}
+
+// ───────────────────────── Agency appointments ─────────────────────────
+
+model AgencyAppointment {
+  id          String            @id @default(cuid())
+  caseId      String
+  staffUserId String?
+  type        AppointmentType
+  startsAt    DateTime
+  endsAt      DateTime
+  reason      String
+  description String?
+  urgency     Priority          @default(NORMAL)
+  status      AppointmentStatus @default(REQUESTED)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  case        Case              @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@index([caseId])
+  @@index([startsAt])
+  @@index([status])
+  @@map("agency_appointments")
+}
+
+// Explicit availability overrides on top of the weekly schedule in appointment_settings
+model AvailabilitySlot {
+  id        String   @id @default(cuid())
+  staffUserId String?
+  date      DateTime @db.Date
+  startTime String // HH:mm
+  endTime   String
+  kind      SlotKind @default(OPEN)
+  note      String?
+
+  @@index([date])
+  @@map("availability_slots")
+}
+
+model AppointmentSetting {
+  id               String   @id @default(cuid())
+  workingDays      Int[] // 0 = Sunday … 6 = Saturday
+  startTime        String // HH:mm
+  endTime          String
+  slotMinutes      Int
+  maxPerDay        Int
+  blockedDates     DateTime[] @db.Date
+  minNoticeHours   Int      @default(12)
+  updatedAt        DateTime @updatedAt
+
+  @@map("appointment_settings")
+}
+
+// ───────────────────────── Work items & communication ─────────────────────────
+
+model Task {
+  id          String     @id @default(cuid())
+  caseId      String?
+  assigneeId  String?
+  title       String
+  description String?
+  dueDate     DateTime?  @db.Date
+  status      TaskStatus @default(OPEN)
+  priority    Priority   @default(NORMAL)
+  createdById String?
+  createdAt   DateTime   @default(now())
+  case        Case?      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignee    StaffProfile? @relation(fields: [assigneeId], references: [id])
+
+  @@index([caseId])
+  @@index([assigneeId])
+  @@index([status])
+  @@index([dueDate])
+  @@map("tasks")
+}
+
+// Internal notes: never shown to students
+model Note {
+  id        String   @id @default(cuid())
+  caseId    String
+  authorId  String
+  body      String
+  createdAt DateTime @default(now())
+  case      Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@index([caseId])
+  @@map("notes")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  caseId      String
+  senderId    String
+  body        String
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+  case        Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  attachments MessageAttachment[]
+  reviewItems HumanReviewItem[]
+
+  @@index([caseId, createdAt])
+  @@map("messages")
+}
+
+model MessageAttachment {
+  id          String   @id @default(cuid())
+  messageId   String
+  documentId  String? // reference to an existing document
+  storageKey  String?
+  filename    String?
+  mimeType    String?
+  sizeBytes   Int?
+  message     Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  document    Document? @relation(fields: [documentId], references: [id])
+
+  @@index([messageId])
+  @@map("message_attachments")
+}
+
+model HumanReviewItem {
+  id          String            @id @default(cuid())
+  caseId      String
+  source      HumanReviewSource
+  // Stable key so the engine can upsert/resolve its own flags: e.g. "SPONSOR_REVIEW:<sponsorId>"
+  dedupeKey   String?
+  code        String
+  reason      String
+  priority    Priority          @default(NORMAL)
+  status      HumanReviewStatus @default(OPEN)
+  messageId   String?
+  requestedById String?
+  resolvedById String?
+  resolvedAt  DateTime?
+  resolution  String?
+  createdAt   DateTime          @default(now())
+  case        Case              @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  message     Message?          @relation(fields: [messageId], references: [id])
+
+  @@unique([caseId, dedupeKey])
+  @@index([status, priority])
+  @@map("human_review_items")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  caseId    String?
+  type      String
+  title     String
+  body      String?
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  case      Case?    @relation(fields: [caseId], references: [id], onDelete: SetNull)
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model NotificationTemplate {
+  id       String @id @default(cuid())
+  type     String
+  locale   Locale
+  title    String
+  body     String
+
+  @@unique([type, locale])
+  @@map("notification_templates")
+}
+
+model KnowledgeBaseArticle {
+  id             String   @id @default(cuid())
+  title          String
+  content        String
+  language       Locale   @default(fr)
+  category       String
+  academicYearId String?
+  source         String?
+  officialUrl    String?
+  lastVerified   DateTime? @db.Date
+  published      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  academicYear   AcademicYear? @relation(fields: [academicYearId], references: [id])
+
+  @@index([language, published])
+  @@map("knowledge_base_articles")
+}
