@@ -20,6 +20,17 @@ export interface ReconcilePlan {
   markNotApplicable: ExistingInstance[];
 }
 
+/** JSON with sorted keys: PostgreSQL JSONB does not preserve key order, so plain JSON.stringify would differ. */
+export function stableStringify(v: unknown): string {
+  if (v === undefined || v === null) return "null";
+  if (Array.isArray(v)) return `[${v.map(stableStringify).join(",")}]`;
+  if (typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    return `{${Object.keys(o).sort().filter((k) => o[k] !== undefined).map((k) => `${JSON.stringify(k)}:${stableStringify(o[k])}`).join(",")}}`;
+  }
+  return JSON.stringify(v);
+}
+
 /** Engine-owned statuses: calculated results and human-review flags. */
 const ENGINE_OWNED: ReadonlySet<RequirementStatus> = new Set(["REQUIRES_HUMAN_REVIEW"]);
 
@@ -71,7 +82,7 @@ export function reconcileInstances(existing: ExistingInstance[], required: Requi
       changed = true;
     }
     const calcChanged =
-      JSON.stringify(req.calculation ?? null) !== JSON.stringify(ex.calculation ?? null) ||
+      stableStringify(req.calculation) !== stableStringify(ex.calculation) ||
       (req.humanReviewReason ?? null) !== (ex.humanReviewReason ?? null);
     if (calcChanged) {
       update.calculationChanged = true;

@@ -11,3 +11,4 @@ src/generated/
 .vscode
 .DS_Store
 .pgdata/
+.test-storage/
