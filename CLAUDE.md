@@ -32,7 +32,7 @@ Build order is fixed (spec section 3). No dashboard before the document engine h
 
 ## Commands
 
-`npm run db:up` · `npm run db:migrate` · `npm run db:seed` · `npm run dev` · `npm test` · `npm run typecheck` · `npm run lint` · `npm run build`
+`npm run db:up` (or `npm run db:local` when Docker is unavailable) · `npm run db:migrate` · `npm run db:seed` · `npm run dev` · `npm test` · `npm run typecheck` · `npm run lint` · `npm run build`
 
 <!-- BEGIN:nextjs-agent-rules -->
 
