@@ -2,6 +2,7 @@ import "dotenv/config";
 import { db } from "../src/lib/db";
 import { seedReferenceData, seedRolesAndPermissions } from "./seed/reference";
 import { seedProcedures, seedScholarships } from "./seed/procedure";
+import { seedOwnerFromEnv } from "./seed/owner";
 
 async function main() {
   console.log("Seeding roles and permissions…");
@@ -12,6 +13,7 @@ async function main() {
   await seedProcedures(db);
   console.log("Seeding scholarships (DSU Toscana 2026/27)…");
   await seedScholarships(db);
+  await seedOwnerFromEnv(db);
 
   if (process.env.SEED_DEMO !== "false") {
     const { seedDemo } = await import("./seed/demo");

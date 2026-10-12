@@ -1,0 +1,76 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# Deploy: push this repo to GitHub/GitLab, then in Render: New > Blueprint, pick the repo.
+# Render reads this file and creates the web service + database together.
+#
+# Storage: files are kept on a Render Disk (STORAGE_DRIVER=local) mounted at /var/data. A Disk only
+# attaches to a single instance (no autoscaling/zero-downtime deploys). For multiple instances, switch
+# STORAGE_DRIVER to "s3" and point the S3_* vars at an S3-compatible service (e.g. Cloudflare R2, Backblaze
+# B2, or a MinIO deployment) instead of the disk.
+#
+# Migrations run automatically before each deploy via preDeployCommand (prisma migrate deploy), which never
+# touches application logic or seed data — it only applies the versioned SQL in prisma/migrations.
+#
+# First deploy: reference data, the 2026/27 procedure and DSU Toscana are seeded automatically on first boot
+# via the preDeployCommand below (safe to re-run: every seed function is idempotent / upsert-based). Set
+# OWNER_EMAIL and OWNER_PASSWORD below (Render will prompt for them) to get your first login — no demo
+# accounts or passwords are deployed. See README.md "Deploying to Render" for details.
+
+services:
+  - type: web
+    name: bon-ita
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm ci && npm run build
+    preDeployCommand: npm run db:deploy && npm run db:seed
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: bon-ita-storage
+      mountPath: /var/data
+      sizeGB: 5
+    envVars:
+      - key: NODE_VERSION
+        value: 22.20.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bon-ita-db
+          property: connectionString
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      # Update these two to match the service's actual onrender.com URL (shown in the Render dashboard
+      # after the first deploy) if it differs from the guess below, then save to trigger a rebuild —
+      # NEXT_PUBLIC_* values are baked in at build time. Prefer a custom domain if you have one.
+      - key: BETTER_AUTH_URL
+        value: https://bon-ita.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://bon-ita.onrender.com
+      - key: STORAGE_DRIVER
+        value: local
+      - key: STORAGE_LOCAL_DIR
+        value: /var/data/storage
+      - key: MAX_UPLOAD_BYTES
+        value: "10485760"
+      - key: DOWNLOAD_SIGNING_SECRET
+        generateValue: true
+      - key: CRON_SECRET
+        generateValue: true
+      - key: POLICY_VERSION
+        value: "2026-09"
+      # Demo data (five fictional students with published dev passwords) must never run in production.
+      - key: SEED_DEMO
+        value: "false"
+      # Filled in at blueprint creation (Render will prompt): your real first login. Leave OWNER_PASSWORD
+      # unset on later deploys — the seed only creates the account once and is a no-op if it already exists.
+      - key: OWNER_EMAIL
+        sync: false
+      - key: OWNER_PASSWORD
+        sync: false
+
+databases:
+  - name: bon-ita-db
+    plan: starter
+    region: frankfurt
+    postgresMajorVersion: "16"

@@ -17,11 +17,11 @@ function files(dir: string, test: (f: string) => boolean, out: string[] = []): s
 const rel = (p: string) => path.relative(process.cwd(), p).replace(/\\/g, "/");
 
 describe("authorization is enforced server-side on every entry point", () => {
-  it("every route handler authenticates (except the auth handler and the secret-protected cron endpoint)", () => {
+  it("every route handler authenticates (except the auth handler, the health check, and the secret-protected cron endpoint)", () => {
     const routes = files(path.resolve("src/app/api"), (f) => f.endsWith("route.ts"));
     expect(routes.length).toBeGreaterThan(8);
     for (const r of routes) {
-      if (r.includes("/auth/") || r.includes("\\auth\\") || r.includes("cron")) continue;
+      if (r.includes("/auth/") || r.includes("\\auth\\") || r.includes("cron") || r.includes("health")) continue;
       expect(fs.readFileSync(r, "utf8"), rel(r)).toMatch(/requireUser\(\)/);
     }
     const cron = fs.readFileSync(path.resolve("src/app/api/cron/reminders/route.ts"), "utf8");
