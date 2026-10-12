@@ -69,10 +69,63 @@ service (MinIO in `docker-compose.yml`; create the bucket named in `S3_BUCKET`).
 Deadline, payment-due and appointment-tomorrow notifications are produced by `POST /api/cron/reminders` with header
 `Authorization: Bearer $CRON_SECRET`. Call it once or twice a day from any scheduler. It is idempotent.
 
-## Deploying to Render
+## Free demo deployment (no cost)
+
+Render has no free managed PostgreSQL, so the Blueprint below (`render.yaml`) always provisions a paid database.
+For a demo with no cost: a **free Render web service** talking to a **free external Postgres on
+[Neon](https://neon.tech)** (no credit card). This path keeps the published demo accounts from
+"Development accounts" section below — it's meant for trying the
+app out, not for real student data.
+
+1. **Database — Neon:** create a free account at [neon.tech](https://neon.tech), create a project, and copy the
+   connection string it gives you (it already includes `?sslmode=require`). That's your `DATABASE_URL`.
+2. **Web service — Render:** push this repo to GitHub, then in Render **New → Web Service**, pick the repo and
+   **do not** let it detect a Blueprint — choose "Web Service" directly. Settings:
+   - Runtime: **Node**
+   - Plan: **Free**
+   - Build Command: `npm ci && npm run build`
+   - Start Command: `npm run render-start-demo`
+     (applies migrations, (re-)seeds reference data **and the demo accounts** on every boot — idempotent, so a
+     free instance restarting after it spins down from inactivity is harmless)
+3. Add these environment variables in the service's **Environment** tab:
+
+   | Key | Value |
+   | --- | --- |
+   | `DATABASE_URL` | the Neon connection string from step 1 |
+   | `BETTER_AUTH_SECRET` | any long random string, e.g. output of `openssl rand -base64 32` |
+   | `DOWNLOAD_SIGNING_SECRET` | another long random string |
+   | `CRON_SECRET` | another long random string (only needed if you wire up reminders) |
+   | `BETTER_AUTH_URL` | `https://<your-service>.onrender.com` (see step 4) |
+   | `NEXT_PUBLIC_APP_URL` | same as `BETTER_AUTH_URL` |
+   | `STORAGE_DRIVER` | `local` |
+   | `STORAGE_LOCAL_DIR` | `./storage` |
+   | `MAX_UPLOAD_BYTES` | `10485760` |
+   | `POLICY_VERSION` | `2026-09` |
+
+   Leave `SEED_DEMO` and `OWNER_EMAIL`/`OWNER_PASSWORD` unset — the demo accounts from the table above are what
+   you want here.
+4. Deploy. Once live, check the actual URL Render assigned (shown at the top of the dashboard) matches
+   `BETTER_AUTH_URL` / `NEXT_PUBLIC_APP_URL`; if not, fix them and save to trigger a rebuild (`NEXT_PUBLIC_APP_URL`
+   is inlined into the client bundle at build time, so a plain restart isn't enough).
+5. Sign in at `/login` with any account from the demo table. Done.
+
+Trade-offs of the free path, worth knowing for a demo:
+- The free web service **spins down after 15 minutes of inactivity**; the next request cold-starts it (migrate +
+  seed + boot), which can take well over a minute.
+- `STORAGE_DRIVER=local` on a free service has **no persistent disk**: uploaded documents are lost whenever the
+  instance restarts or redeploys. Fine for clicking through the upload/review flow; not for keeping files.
+- Neon's free tier auto-suspends an idle database after a few minutes too, with its own cold start on the next
+  query — on top of Render's, so the very first request after a quiet period is slow. Subsequent ones are fast.
+
+None of this needs `render.yaml` or a credit card. When you outgrow it, move to the paid Blueprint path below,
+which adds a persistent Disk and drops the demo accounts in favor of your own `OWNER_EMAIL`/`OWNER_PASSWORD`.
+
+## Deploying to Render (paid Blueprint, persistent storage)
 
 [`render.yaml`](render.yaml) is a [Render Blueprint](https://render.com/docs/blueprint-spec): it provisions the web
-service and a managed PostgreSQL database together.
+service and a managed PostgreSQL database together. **This costs money** — Render's smallest Postgres plan and the
+`starter` web plan are both paid, since Render has no free managed database. Use the free path above if you just
+want a demo.
 
 1. Push this repository to GitHub or GitLab.
 2. In the Render dashboard: **New → Blueprint**, pick the repo. Render reads `render.yaml`.

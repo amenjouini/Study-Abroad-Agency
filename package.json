@@ -11,6 +11,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "render-start": "prisma migrate deploy && next start",
+    "render-start-demo": "prisma migrate deploy && prisma db seed && next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

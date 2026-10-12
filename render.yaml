@@ -1,6 +1,11 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
 #
-# Deploy: push this repo to GitHub/GitLab, then in Render: New > Blueprint, pick the repo.
+# This provisions a paid Render PostgreSQL database (Render has no free managed Postgres) plus a paid
+# "starter" web service and disk. For a free demo deployment instead, see README.md
+# "Free demo deployment (no cost)" — it uses a free Render web service with an external free Postgres
+# (Neon) and does not use this file at all.
+#
+# Deploy with this file: push this repo to GitHub/GitLab, then in Render: New > Blueprint, pick the repo.
 # Render reads this file and creates the web service + database together.
 #
 # Storage: files are kept on a Render Disk (STORAGE_DRIVER=local) mounted at /var/data. A Disk only
