@@ -84,6 +84,7 @@ app out, not for real student data.
    - Runtime: **Node**
    - Plan: **Free**
    - Build Command: `npm ci && npm run build`
+     (if `npm ci` ever reports that `package-lock.json` is out of sync, use `npm install && npm run build` instead)
    - Start Command: `npm run render-start-demo`
      (applies migrations, (re-)seeds reference data **and the demo accounts** on every boot — idempotent, so a
      free instance restarting after it spins down from inactivity is harmless)
