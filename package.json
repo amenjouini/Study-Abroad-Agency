@@ -12,6 +12,7 @@
     "start": "next start",
     "render-start": "prisma migrate deploy && next start",
     "render-start-demo": "prisma migrate deploy && prisma db seed && next start",
+    "vercel-build": "prisma generate && prisma migrate deploy && prisma db seed && next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

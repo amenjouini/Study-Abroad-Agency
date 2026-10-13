@@ -121,7 +121,7 @@ export function getStorage(): StorageDriver {
   driver =
     process.env.STORAGE_DRIVER === "s3"
       ? new S3Driver(process.env.S3_BUCKET ?? "bonita-documents")
-      : new LocalDiskDriver(path.resolve(process.env.STORAGE_LOCAL_DIR ?? "./storage"));
+      : new LocalDiskDriver(path.resolve(/* turbopackIgnore: true */ process.env.STORAGE_LOCAL_DIR ?? "./storage"));
   return driver;
 }
 

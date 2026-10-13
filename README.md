@@ -121,6 +121,41 @@ Trade-offs of the free path, worth knowing for a demo:
 None of this needs `render.yaml` or a credit card. When you outgrow it, move to the paid Blueprint path below,
 which adds a persistent Disk and drops the demo accounts in favor of your own `OWNER_EMAIL`/`OWNER_PASSWORD`.
 
+## Free demo deployment on Vercel
+
+Same idea as above (free Neon database, demo accounts), hosted on Vercel instead of Render.
+
+1. **Database — Neon:** create a project at [neon.tech](https://neon.tech) and copy the connection string
+   (`DATABASE_URL`).
+2. **Vercel:** **Add New → Project**, import the GitHub repo. Framework Preset: **Next.js**. Leave Root Directory,
+   Install Command and Output Directory at their defaults.
+3. **Build Command:** leave the override **off**. Vercel then runs the `vercel-build` script from `package.json`
+   (generate client, apply migrations, seed, build). If you do override it, use exactly `npm run vercel-build`.
+   Never put `npm install` in the Build Command: Vercel builds with `NODE_ENV=production`, so a second install
+   removes the dev dependencies (Tailwind, TypeScript) and the build fails with
+   `Cannot find module '@tailwindcss/postcss'`.
+4. **Environment Variables** (before the first deploy):
+
+   | Key | Value |
+   | --- | --- |
+   | `DATABASE_URL` | the Neon connection string |
+   | `BETTER_AUTH_SECRET` | a long random string |
+   | `DOWNLOAD_SIGNING_SECRET` | another long random string |
+   | `CRON_SECRET` | another long random string |
+   | `BETTER_AUTH_URL` | `https://<your-project>.vercel.app` |
+   | `NEXT_PUBLIC_APP_URL` | same as `BETTER_AUTH_URL` |
+   | `STORAGE_DRIVER` | `local` |
+   | `STORAGE_LOCAL_DIR` | `/tmp/storage` |
+   | `MAX_UPLOAD_BYTES` | `4194304` |
+   | `POLICY_VERSION` | `2026-09` |
+
+5. Deploy. If the URL Vercel assigned differs from what you entered, fix `BETTER_AUTH_URL` /
+   `NEXT_PUBLIC_APP_URL` and **redeploy** (the value is inlined at build time). Sign in at `/login` with a demo account.
+
+Trade-offs on Vercel: the filesystem is read-only except `/tmp`, which is temporary and not shared between
+function instances, so an uploaded document may not be downloadable later — use `STORAGE_DRIVER=s3` for anything
+beyond clicking through. Request bodies are capped at about 4.5 MB, hence the smaller `MAX_UPLOAD_BYTES`.
+
 ## Deploying to Render (paid Blueprint, persistent storage)
 
 [`render.yaml`](render.yaml) is a [Render Blueprint](https://render.com/docs/blueprint-spec): it provisions the web
